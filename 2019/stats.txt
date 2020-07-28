@@ -1,0 +1,7 @@
+greedy:
+solution length: 61
+{'max_fringe_size': 136, 'visited_nodes': 195, 'iterations': 195}
+
+astar:
+solution length: 27
+{'max_fringe_size': 1734, 'visited_nodes': 3200, 'iterations': 3200}
