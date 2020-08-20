@@ -1,10 +1,11 @@
-from simpleai.search import SearchProblem
+from simpleai.search import SearchProblem, breadth_first, depth_first, uniform_cost
+from simpleai.search.viewers import WebViewer, BaseViewer
 
 
 INITIAL_STATE = (
-    (7, 2, 4),
-    (5, 0, 6),
-    (8, 3, 1),
+    (1, 4, 2),
+    (0, 3, 5),
+    (6, 7, 8),
 )
 
 GOAL_STATE = (
@@ -76,3 +77,7 @@ class EightPuzzle(SearchProblem):
         In this problem, every action (moving a number) costs the same: 1
         """
         return 1
+
+
+problem = EightPuzzle(INITIAL_STATE)
+result = depth_first(problem, graph_search=True, viewer=WebViewer())
