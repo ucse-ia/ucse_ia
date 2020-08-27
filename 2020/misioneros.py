@@ -4,6 +4,8 @@ from simpleai.search import (
     depth_first,
     iterative_limited_depth_first,
     uniform_cost,
+    greedy,
+    astar,
 )
 
 from simpleai.search.viewers import WebViewer, BaseViewer
@@ -84,11 +86,26 @@ class MisionerosProblem(SearchProblem):
         else:
             return (nuevo_origen, nuevo_destino, nuevo_bote)
 
+    def heuristic(self, state):
+        """
+        Asumimos que no importa que los caníbales sean más que los misioneros.
+        """
+        gente_izquierda, _, _ = state
+
+        total_gente_pendiente = sum(gente_izquierda)
+        idas_necesarias = total_gente_pendiente / 2
+        vueltas_necesarias = idas_necesarias - 1
+        idas_extras_necesarias = vueltas_necesarias / 2
+
+        return idas_necesarias + vueltas_necesarias + idas_extras_necesarias
+
 
 metodos = (
     breadth_first,
     depth_first,
     uniform_cost,
+    greedy,
+    astar,
 )
 
 for metodo_busqueda in metodos:
@@ -100,14 +117,14 @@ for metodo_busqueda in metodos:
     problem = MisionerosProblem(INITIAL_STATE)
     result = metodo_busqueda(problem, graph_search=True, viewer=visor)
 
-    print('estado final:')
-    print(result.state)
+    # print('estado final:')
+    # print(result.state)
 
-    print('-' * 50)
+    # print('-' * 50)
 
-    for action, state in result.path():
-        print('accion:', action)
-        print('estado resultante:', state)
+    # for action, state in result.path():
+        # print('accion:', action)
+        # print('estado resultante:', state)
 
     print('estadísticas:')
     print('cantidad de acciones hasta la meta:', len(result.path()))
