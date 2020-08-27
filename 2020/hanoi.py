@@ -14,6 +14,11 @@ GOAL_STATE = ((), (), (), (4, 3, 2, 1))
 
 
 class HanoiProblem(SearchProblem):
+    """
+    Variante de las torres de hanoi, con las siguientes reglas:
+    - solo se puede mover a palitos adyacentes
+    - no hay restricción de mover una pieza grande dejándola arriba de otra más chica
+    """
     def cost(self, state1, action, state2):
         return 1
 
