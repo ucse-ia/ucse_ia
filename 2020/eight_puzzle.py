@@ -130,24 +130,26 @@ metodos = (
     astar,
 )
 
-for metodo_busqueda in metodos:
-    print()
-    print('=' * 50)
 
-    print("corriendo:", metodo_busqueda)
-    visor = BaseViewer()
-    problem = EightPuzzle(INITIAL_STATE)
-    result = metodo_busqueda(problem, graph_search=True, viewer=visor)
+if __name__ == '__main__':
+    for metodo_busqueda in metodos:
+        print()
+        print('=' * 50)
 
-    # print('estado final:')
-    # print(result.state)
+        print("corriendo:", metodo_busqueda)
+        visor = BaseViewer()
+        problem = EightPuzzle(INITIAL_STATE)
+        result = metodo_busqueda(problem, graph_search=True, viewer=visor)
 
-    # print('-' * 50)
+        # print('estado final:')
+        # print(result.state)
 
-    # for action, state in result.path():
-        # print('accion:', action)
-        # print('estado resultante:', state)
+        # print('-' * 50)
 
-    print('estadísticas:')
-    print('cantidad de acciones hasta la meta:', len(result.path()))
-    print(visor.stats)
+        # for action, state in result.path():
+            # print('accion:', action)
+            # print('estado resultante:', state)
+
+        print('estadísticas:')
+        print('cantidad de acciones hasta la meta:', len(result.path()))
+        print(visor.stats)
