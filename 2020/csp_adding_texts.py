@@ -1,6 +1,14 @@
 from itertools import combinations
 
-from simpleai.search import CspProblem, backtrack, MOST_CONSTRAINED_VARIABLE, LEAST_CONSTRAINING_VALUE
+from simpleai.search import (
+    CspProblem,
+    backtrack,
+    min_conflicts,
+    MOST_CONSTRAINED_VARIABLE,
+    HIGHEST_DEGREE_VARIABLE,
+    LEAST_CONSTRAINING_VALUE,
+)
+from simpleai.search.csp import convert_to_binary
 
 #  A4 A3 A2 A1
 #     S  E  N  D
@@ -66,9 +74,47 @@ constraints.append((('M', 'A4'), equals))
 print('Variables:', variables)
 print('Domains:', domains)
 
-result = backtrack(CspProblem(variables, domains, constraints),
-                   variable_heuristic=MOST_CONSTRAINED_VARIABLE,
-                   value_heuristic=LEAST_CONSTRAINING_VALUE)
+problem = CspProblem(variables, domains, constraints)
 
-print('Result:')
-print(result)
+print('Solving with backtracking')
+result_bt = backtrack(problem,
+                      variable_heuristic=MOST_CONSTRAINED_VARIABLE,
+                      value_heuristic=LEAST_CONSTRAINING_VALUE,
+                      inference=True)
+
+print('Solving with min conflicts')
+result_mc = min_conflicts(problem, iterations_limit=500)
+
+print('Binarizing and solving again with backtracking')
+new_variables, new_domains, new_constraints = convert_to_binary(variables, domains, constraints)
+result_btb = backtrack(CspProblem(new_variables, new_domains, new_constraints),
+                       variable_heuristic=MOST_CONSTRAINED_VARIABLE,
+                       value_heuristic=LEAST_CONSTRAINING_VALUE)
+
+
+def human_result(result):
+    template = """
+     A4 A3 A2 A1
+        S  E  N  D
+     +  M  O  R  E
+    ---------------
+     M  O  N  E  Y
+    """
+
+    for variable, value in result.items():
+        template = template.replace(variable, str(value))
+
+    print(template)
+
+
+print('Result backtracking:')
+print(result_bt)
+human_result(result_bt)
+
+print('Result min conflicts:')
+print(result_mc)
+human_result(result_mc)
+
+print('Result backtracking, binarized:')
+print(result_btb)
+human_result(result_btb)
