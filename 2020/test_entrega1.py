@@ -83,16 +83,34 @@ SEDES = 'rafaela', 'santa_fe'
 
 
 @pytest.mark.dependency(depends=["test_funcion_bien_definida"])
-@pytest.mark.parametrize("metodo,camiones,paquetes,limite_segs", (
-    # casos super simples, con un solo camión y paquete necesitando un solo viaje (y
-    # la vuelta)
-    ("breadth_first", [("c1", "rafaela", 1)], [("p1", "rafaela", "susana")], 3),
-    ("greedy", [("c1", "rafaela", 1)], [("p1", "rafaela", "susana")], 3),
-    ("astar", [("c1", "rafaela", 1)], [("p1", "rafaela", "susana")], 3),
-
-    # TODO agregar casos más complejos
+@pytest.mark.parametrize("camiones", (
+    # un camion
+    [("c1", "rafaela", 2)],
+    # un camion normal y uno que no llega a nada
+    [("c1", "rafaela", 2), ("c2", "rafaela", 0.002)],
+    # un camion normal y uno que no se le acaba nunca el combustible
+    [("c1", "rafaela", 2), ("c2", "santa_fe", 9999)],
 ))
-def test_itinerario_es_correcto(planear_camiones, metodo, camiones, paquetes, limite_segs):
+@pytest.mark.parametrize("paquetes", (
+    # un paquete
+    [("p1", "rafaela", "lehmann")],
+    # un paquete con recorrido complicado
+    [("p1", "sunchales", "susana")],
+    # dos paquetes con igual recorrido
+    [("p1", "rafaela", "lehmann"), ("p2", "rafaela", "lehmann")],
+    # dos paquetes con recorrido compartido
+    [("p1", "rafaela", "lehmann"), ("p2", "rafaela", "sunchales")],
+    # dos paquetes con viajes muy diferentes
+    [("p1", "rafaela", "lehmann"), ("p2", "susana", "angelica")],
+    # paquetes buenos para distribuir trabajo entre camiones
+    [("p1", "lehmann", "sunchales"), ("p2", "santo_tome", "recreo")],
+))
+@pytest.mark.parametrize("metodo", (
+    "astar",
+    "uniform_cost",
+))
+def test_itinerario_es_correcto(planear_camiones, metodo, camiones, paquetes):
+    limite_segs = 10
     mensaje_si_demora = (f"La prueba con método {metodo}, camiones {camiones} y paquetes "
                          f"{paquetes} demoró demasiado tiempo (más de {limite_segs} segundos), "
                          f"probablemente algo no está demasiado bien")
