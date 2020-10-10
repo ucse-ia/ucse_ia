@@ -85,17 +85,19 @@ SEDES = 'rafaela', 'santa_fe'
 @pytest.mark.dependency(depends=["test_funcion_bien_definida"])
 @pytest.mark.parametrize("camiones", (
     # un camion
-    [("c1", "rafaela", 2)],
+    [("c1", "rafaela", 1.5)],
     # un camion normal y uno que no llega a nada
-    [("c1", "rafaela", 2), ("c2", "rafaela", 0.002)],
+    [("c1", "rafaela", 1.5), ("c2", "rafaela", 0.002)],
     # un camion normal y uno que no se le acaba nunca el combustible
-    [("c1", "rafaela", 2), ("c2", "santa_fe", 9999)],
+    [("c1", "rafaela", 1.5), ("c2", "santa_fe", 9999)],
 ))
 @pytest.mark.parametrize("paquetes", (
     # un paquete
     [("p1", "rafaela", "lehmann")],
     # un paquete con recorrido complicado
     [("p1", "sunchales", "susana")],
+    # un paquete con recorrido que requiere recarga
+    [("p1", "sunchales", "sauce_viejo")],
     # dos paquetes con igual recorrido
     [("p1", "rafaela", "lehmann"), ("p2", "rafaela", "lehmann")],
     # dos paquetes con recorrido compartido
