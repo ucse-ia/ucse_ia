@@ -106,13 +106,26 @@ SEDES = 'rafaela', 'santa_fe'
     [("p1", "rafaela", "lehmann"), ("p2", "susana", "angelica")],
     # paquetes buenos para distribuir trabajo entre camiones
     [("p1", "lehmann", "sunchales"), ("p2", "santo_tome", "recreo")],
+    # muchos paquetes
+    [("p1", "rafaela", "susana"), ("p2", "rafaela", "susana"), ("p3", "susana", "angelica"),
+     ("p4", "rafaela", "angelica"), ("p5", "rafaela", "susana"), ("p6", "susana", "rafaela"),
+     ("p7", "angelica", "rafaela")],
 ))
 @pytest.mark.parametrize("metodo", (
     "astar",
     "uniform_cost",
 ))
 def test_itinerario_es_correcto(planear_camiones, metodo, camiones, paquetes):
-    limite_segs = 10
+    if metodo != "astar" and len(paquetes) > 2:
+        pytest.skip("No testeamos los casos con muchos paquetes donde no se use A*, por lo que "
+                    "demoran")
+
+    if len(paquetes) <= 2:
+        # casos simples, que deberían demorar poco
+        limite_segs = 10
+    else:
+        limite_segs = None
+
     mensaje_si_demora = (f"La prueba con método {metodo}, camiones {camiones} y paquetes "
                          f"{paquetes} demoró demasiado tiempo (más de {limite_segs} segundos), "
                          f"probablemente algo no está demasiado bien")
