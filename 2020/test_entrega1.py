@@ -89,8 +89,9 @@ CAMION_INUTIL = "c_inutil", "rafaela", 0.002
 
 PAQUETE_NORMAL = "p_normal", "rafaela", "lehmann"
 PAQUETE_NORMAL2 = "p_normal2", "rafaela", "lehmann"
+PAQUETE_INVERTIDO = "p_invertido", "lehmann", "rafaela"
+PAQUETE_OPUESTO = "p_opuesto", "rafaela", "susana"
 PAQUETE_PASANDO_NORMAL = "p_pasando_normal", "rafaela", "sunchales"
-PAQUETE_OPUESTO = "p_opuesto", "susana", "angelica"
 PAQUETE_MOLESTO = "p_molesto", "sunchales", "susana"
 PAQUETE_MUY_LEJOS = "p_lejos", "sunchales", "sauce_viejo"
 PAQUETE_COSTERO = "p2", "santo_tome", "recreo"
@@ -103,20 +104,30 @@ PAQUETE_COSTERO = "p2", "santo_tome", "recreo"
     ((CAMION_NORMAL, ), (PAQUETE_NORMAL, ), "uniform_cost", 2, 3),
     ((CAMION_NORMAL, ), (PAQUETE_NORMAL, ), "astar", 2, 3),
 
+    # camión único con paquete que tiene que ir a ser buscado
+    ((CAMION_NORMAL, ), (PAQUETE_INVERTIDO, ), "breadth_first", 2, 3),
+    ((CAMION_NORMAL, ), (PAQUETE_INVERTIDO, ), "uniform_cost", 2, 3),
+    ((CAMION_NORMAL, ), (PAQUETE_INVERTIDO, ), "astar", 2, 3),
+
     # camión único con par de paquetes iguales
     ((CAMION_NORMAL, ), (PAQUETE_NORMAL, PAQUETE_NORMAL2), "breadth_first", 2, 3),
     ((CAMION_NORMAL, ), (PAQUETE_NORMAL, PAQUETE_NORMAL2), "uniform_cost", 2, 3),
     ((CAMION_NORMAL, ), (PAQUETE_NORMAL, PAQUETE_NORMAL2), "astar", 2, 3),
+
+    # camión único con paquetes para la ida y la vuelta
+    ((CAMION_NORMAL, ), (PAQUETE_NORMAL, PAQUETE_INVERTIDO), "breadth_first", 2, 3),
+    ((CAMION_NORMAL, ), (PAQUETE_NORMAL, PAQUETE_INVERTIDO), "uniform_cost", 2, 3),
+    ((CAMION_NORMAL, ), (PAQUETE_NORMAL, PAQUETE_INVERTIDO), "astar", 2, 3),
 
     # camión único con par de paquetes que comparten recorrido
     ((CAMION_NORMAL, ), (PAQUETE_NORMAL, PAQUETE_PASANDO_NORMAL), "breadth_first", 4, 5),
     ((CAMION_NORMAL, ), (PAQUETE_NORMAL, PAQUETE_PASANDO_NORMAL), "uniform_cost", 4, 5),
     ((CAMION_NORMAL, ), (PAQUETE_NORMAL, PAQUETE_PASANDO_NORMAL), "astar", 4, 5),
 
-    # camión único con par de paquetes con viajes muy distintos
-    ((CAMION_NORMAL, ), (PAQUETE_NORMAL, PAQUETE_OPUESTO), "breadth_first", 6, 5),
-    ((CAMION_NORMAL, ), (PAQUETE_NORMAL, PAQUETE_OPUESTO), "uniform_cost", 6, 5),
-    ((CAMION_NORMAL, ), (PAQUETE_NORMAL, PAQUETE_OPUESTO), "astar", 6, 5),
+    # camión único con par de paquetes con viajes disyuntos
+    ((CAMION_NORMAL, ), (PAQUETE_NORMAL, PAQUETE_OPUESTO), "breadth_first", 4, 5),
+    ((CAMION_NORMAL, ), (PAQUETE_NORMAL, PAQUETE_OPUESTO), "uniform_cost", 4, 5),
+    ((CAMION_NORMAL, ), (PAQUETE_NORMAL, PAQUETE_OPUESTO), "astar", 4, 5),
 
     # camión único con paquete de viaje con recarga en el medio
     ((CAMION_NORMAL, ), (PAQUETE_MOLESTO, ), "breadth_first", 6, 5),
@@ -146,12 +157,11 @@ PAQUETE_COSTERO = "p2", "santo_tome", "recreo"
     ((CAMION_NORMAL, CAMION_INUTIL), (PAQUETE_NORMAL, PAQUETE_COSTERO), "uniform_cost", 9, 5),
     ((CAMION_NORMAL, CAMION_INUTIL), (PAQUETE_NORMAL, PAQUETE_COSTERO), "astar", 9, 5),
 
-    # muchos paquetes (deshabilitado por ahora por el tiempo que puede llevar, trabajando en armar
-    # uno más factible)
-    # ((CAMION_NORMAL, CAMION_NORMAL2, CAMION_COSTERO),
-     # (PAQUETE_NORMAL, PAQUETE_NORMAL2, PAQUETE_PASANDO_NORMAL, PAQUETE_MOLESTO, PAQUETE_OPUESTO,
-      # PAQUETE_COSTERO),
-     # "astar", 9, 60),
+    # un camion con mucho trabajo
+    ((CAMION_NORMAL, ),
+     (PAQUETE_NORMAL, PAQUETE_NORMAL2, PAQUETE_PASANDO_NORMAL, PAQUETE_INVERTIDO, PAQUETE_MOLESTO,
+      PAQUETE_OPUESTO),
+     "astar", 6, 20),
 ))
 def test_itinerario_es_correcto(planear_camiones, metodo, camiones, paquetes, viajes_esperados,
                                 limite_segs):
