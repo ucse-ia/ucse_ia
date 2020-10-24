@@ -82,50 +82,79 @@ TRAMOS_VALIDOS = set(DISTANCIAS.keys())
 SEDES = 'rafaela', 'santa_fe'
 
 
+CAMION_NORMAL = "c_normal", "rafaela", 1.5
+CAMION_NORMAL2 = "c_normal2", "rafaela", 1.5
+CAMION_COSTERO = "c_este", "santa_fe", 1.5
+CAMION_INUTIL = "c_inutil", "rafaela", 0.002
+
+PAQUETE_NORMAL = "p_normal", "rafaela", "lehmann"
+PAQUETE_NORMAL2 = "p_normal2", "rafaela", "lehmann"
+PAQUETE_PASANDO_NORMAL = "p_pasando_normal", "rafaela", "sunchales"
+PAQUETE_OPUESTO = "p_opuesto", "susana", "angelica"
+PAQUETE_MOLESTO = "p_molesto", "sunchales", "susana"
+PAQUETE_MUY_LEJOS = "p_lejos", "sunchales", "sauce_viejo"
+PAQUETE_COSTERO = "p2", "santo_tome", "recreo"
+
+
 @pytest.mark.dependency(depends=["test_funcion_bien_definida"])
-@pytest.mark.parametrize("camiones", (
-    # un camion
-    [("c1", "rafaela", 1.5)],
-    # un camion normal y uno que no llega a nada
-    [("c1", "rafaela", 1.5), ("c2", "rafaela", 0.002)],
-    # un camion normal y uno que no se le acaba nunca el combustible
-    [("c1", "rafaela", 1.5), ("c2", "santa_fe", 9999)],
-))
-@pytest.mark.parametrize("paquetes", (
-    # un paquete
-    [("p1", "rafaela", "lehmann")],
-    # un paquete con recorrido complicado
-    [("p1", "sunchales", "susana")],
-    # un paquete con recorrido que requiere recarga
-    [("p1", "sunchales", "sauce_viejo")],
-    # dos paquetes con igual recorrido
-    [("p1", "rafaela", "lehmann"), ("p2", "rafaela", "lehmann")],
-    # dos paquetes con recorrido compartido
-    [("p1", "rafaela", "lehmann"), ("p2", "rafaela", "sunchales")],
-    # dos paquetes con viajes muy diferentes
-    [("p1", "rafaela", "lehmann"), ("p2", "susana", "angelica")],
-    # paquetes buenos para distribuir trabajo entre camiones
-    [("p1", "lehmann", "sunchales"), ("p2", "santo_tome", "recreo")],
-    # muchos paquetes
-    [("p1", "rafaela", "susana"), ("p2", "rafaela", "susana"), ("p3", "susana", "angelica"),
-     ("p4", "rafaela", "angelica"), ("p5", "rafaela", "susana"), ("p6", "susana", "rafaela"),
-     ("p7", "angelica", "rafaela")],
-))
-@pytest.mark.parametrize("metodo", (
-    "astar",
-    "uniform_cost",
-))
-def test_itinerario_es_correcto(planear_camiones, metodo, camiones, paquetes):
-    if metodo != "astar" and len(paquetes) > 2:
-        pytest.skip("No testeamos los casos con muchos paquetes donde no se use A*, por lo que "
-                    "demoran")
+@pytest.mark.parametrize("camiones,paquetes,metodo,viajes_esperados,limite_segs", (
+    # casos super básicos
+    ((CAMION_NORMAL, ), (PAQUETE_NORMAL, ), "breadth_first", 2, 3),
+    ((CAMION_NORMAL, ), (PAQUETE_NORMAL, ), "uniform_cost", 2, 3),
+    ((CAMION_NORMAL, ), (PAQUETE_NORMAL, ), "astar", 2, 3),
 
-    if len(paquetes) <= 2:
-        # casos simples, que deberían demorar poco
-        limite_segs = 10
-    else:
-        limite_segs = None
+    # camión único con par de paquetes iguales
+    ((CAMION_NORMAL, ), (PAQUETE_NORMAL, PAQUETE_NORMAL2), "breadth_first", 2, 3),
+    ((CAMION_NORMAL, ), (PAQUETE_NORMAL, PAQUETE_NORMAL2), "uniform_cost", 2, 3),
+    ((CAMION_NORMAL, ), (PAQUETE_NORMAL, PAQUETE_NORMAL2), "astar", 2, 3),
 
+    # camión único con par de paquetes que comparten recorrido
+    ((CAMION_NORMAL, ), (PAQUETE_NORMAL, PAQUETE_PASANDO_NORMAL), "breadth_first", 4, 5),
+    ((CAMION_NORMAL, ), (PAQUETE_NORMAL, PAQUETE_PASANDO_NORMAL), "uniform_cost", 4, 5),
+    ((CAMION_NORMAL, ), (PAQUETE_NORMAL, PAQUETE_PASANDO_NORMAL), "astar", 4, 5),
+
+    # camión único con par de paquetes con viajes muy distintos
+    ((CAMION_NORMAL, ), (PAQUETE_NORMAL, PAQUETE_OPUESTO), "breadth_first", 6, 5),
+    ((CAMION_NORMAL, ), (PAQUETE_NORMAL, PAQUETE_OPUESTO), "uniform_cost", 6, 5),
+    ((CAMION_NORMAL, ), (PAQUETE_NORMAL, PAQUETE_OPUESTO), "astar", 6, 5),
+
+    # camión único con paquete de viaje con recarga en el medio
+    ((CAMION_NORMAL, ), (PAQUETE_MOLESTO, ), "breadth_first", 6, 5),
+    ((CAMION_NORMAL, ), (PAQUETE_MOLESTO, ), "uniform_cost", 6, 5),
+    ((CAMION_NORMAL, ), (PAQUETE_MOLESTO, ), "astar", 6, 5),
+
+    # un camion teniendo que llevar paquete muy lejos recargando más de una vez y terminando en
+    # otra ciudad que la de origen
+    ((CAMION_NORMAL, ), (PAQUETE_MUY_LEJOS, ), "breadth_first", 11, 15),
+    ((CAMION_NORMAL, ), (PAQUETE_MUY_LEJOS, ), "uniform_cost", 11, 5),
+    ((CAMION_NORMAL, ), (PAQUETE_MUY_LEJOS, ), "astar", 11, 5),
+
+    # dos camiones pero uno no hace falta que haga nada
+    ((CAMION_NORMAL, CAMION_NORMAL2), (PAQUETE_NORMAL, PAQUETE_NORMAL2), "breadth_first", 2, 5),
+    ((CAMION_NORMAL, CAMION_NORMAL2), (PAQUETE_NORMAL, PAQUETE_NORMAL2), "uniform_cost", 2, 5),
+    ((CAMION_NORMAL, CAMION_NORMAL2), (PAQUETE_NORMAL, PAQUETE_NORMAL2), "astar", 2, 5),
+
+    # dos camiones con recorridos que se acomodan bien a que se repartan
+    ((CAMION_NORMAL, CAMION_COSTERO), (PAQUETE_NORMAL, PAQUETE_COSTERO), "breadth_first", 6, 15),
+    ((CAMION_NORMAL, CAMION_COSTERO), (PAQUETE_NORMAL, PAQUETE_COSTERO), "uniform_cost", 6, 5),
+    ((CAMION_NORMAL, CAMION_COSTERO), (PAQUETE_NORMAL, PAQUETE_COSTERO), "astar", 6, 5),
+
+    # dos camiones pero uno es inútil así que el otro tiene que hacer todo
+    # en el caso de breadth_first no va a ser óptimo, porque el camino de menos pasos entre
+    # rafaela y santa fe, no es el de menos costo
+    ((CAMION_NORMAL, CAMION_INUTIL), (PAQUETE_NORMAL, PAQUETE_COSTERO), "breadth_first", 8, 15),
+    ((CAMION_NORMAL, CAMION_INUTIL), (PAQUETE_NORMAL, PAQUETE_COSTERO), "uniform_cost", 9, 5),
+    ((CAMION_NORMAL, CAMION_INUTIL), (PAQUETE_NORMAL, PAQUETE_COSTERO), "astar", 9, 5),
+
+    # muchos paquetes (deshabilitado por ahora por el tiempo que puede llevar, trabajando en armar
+    # uno más factible)
+    # ((CAMION_NORMAL, CAMION_NORMAL2, CAMION_COSTERO),
+     # (PAQUETE_NORMAL, PAQUETE_NORMAL2, PAQUETE_PASANDO_NORMAL, PAQUETE_MOLESTO, PAQUETE_OPUESTO,
+      # PAQUETE_COSTERO),
+     # "astar", 9, 60),
+))
+def test_itinerario_es_correcto(planear_camiones, metodo, camiones, paquetes, viajes_esperados,
+                                limite_segs):
     mensaje_si_demora = (f"La prueba con método {metodo}, camiones {camiones} y paquetes "
                          f"{paquetes} demoró demasiado tiempo (más de {limite_segs} segundos), "
                          f"probablemente algo no está demasiado bien")
@@ -222,3 +251,9 @@ def test_itinerario_es_correcto(planear_camiones, metodo, camiones, paquetes):
                ("El itinerario deja un paquete sin llegar a su ciudad de destino. El paquete "
                 f"{id_paquete} termina en {ciudad_paquete} pero debería terminar en "
                 f"{ciudad_destino}")
+
+    # validamos que la cantidad de viajes sea la esperada para el caso
+    if viajes_esperados is not None:
+        assert len(itinerario) == viajes_esperados, \
+               (f"El itinerario construído tiene {len(itinerario)} viajes, pero para este caso "
+                f"el largo esperado del itinerario es de {viajes_esperados}.")
