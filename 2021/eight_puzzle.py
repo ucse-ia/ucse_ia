@@ -5,7 +5,11 @@ from simpleai.search import (
     uniform_cost,
     limited_depth_first,
     iterative_limited_depth_first,
+    # informed search
+    greedy,
+    astar,
 )
+from simpleai.search.viewers import WebViewer, BaseViewer
 
 # 1 4 2
 #   3 5
@@ -77,11 +81,38 @@ class EightPuzzle(SearchProblem):
 
         return new_state
 
+    def heuristic(self, state):
+        estimated_cost = 0
+
+        for piece in range(1, 9):
+            piece_row, piece_col = where_is(piece, state)
+            goal_row, goal_col = where_is(piece, GOAL)
+
+            row_diff = abs(piece_row - goal_row)
+            col_diff = abs(piece_col - goal_col)
+            distance = row_diff + col_diff
+
+            estimated_cost += distance
+
+        return estimated_cost
 
 
-problem = EightPuzzle(INITIAL)
 
-result = limited_depth_first(problem, depth_limit=5)
+
+INITIAL_HARDER = (
+    (3, 0, 7),
+    (8, 2, 1),
+    (4, 6, 5),
+)
+
+problem = EightPuzzle(INITIAL_HARDER)
+# viewer = WebViewer()
+viewer = BaseViewer()
+
+# result = limited_depth_first(problem, graph_search=True, viewer=viewer, depth_limit=3)
+#result = astar(problem, graph_search=True)
+#result = astar(problem, graph_search=True, viewer=viewer)
+result = breadth_first(problem, graph_search=True, viewer=viewer)
 
 print("Goal node:", result)
 
@@ -89,3 +120,6 @@ print("Path from initial to goal:")
 for action, state in result.path():
     print("Action:", action)
     print("State:", state)
+
+print("Stats:")
+print(viewer.stats)
