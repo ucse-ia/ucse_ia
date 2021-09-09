@@ -1,3 +1,6 @@
+# link a la resolución de la búsqueda con este planteo:
+# https://docs.google.com/drawings/d/1TlmRflPUXVpy8ZENMDGISnQkcmq5LulAdx5jQFFET30/edit?usp=sharing
+
 # el estado es una tupla de dos cosas: habitación actual del bombero, y diccionario de segundos de fuego restante en cada habitación
 INNITIAL_STATE = ("E", {"E": 0, "L": 10, "D": 10, "B": 30, "C": 600})
 
