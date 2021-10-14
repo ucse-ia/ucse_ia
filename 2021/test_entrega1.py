@@ -70,6 +70,11 @@ S1 = ("s1", "soporte")
 S2 = ("s2", "soporte")
 # ejemplos de minas
 MICRO_TUNEL = ((5, 1), )
+MINI_TUNEL_RECTO = ((5, 1), (5, 2), (5, 3), (5, 4))
+MINI_TUNEL_L = ((5, 1), (5, 2), (5, 3), (4, 3), (3, 3))
+MINI_TUNEL_T = ((5, 1), (5, 2), (5, 3), (4, 3), (3, 3), (6, 3), (7, 3))
+# esta mina requiere recarga
+MINI_TUNEL_CRUZ = ((5, 1), (5, 2), (5, 3), (5, 4), (4, 3), (3, 3), (6, 3), (7, 3))
 
 @pytest.mark.dependency(depends=["test_funcion_bien_definida"])
 @pytest.mark.parametrize("tuneles,robots,pasos_esperados,limite_segs", (
@@ -81,6 +86,22 @@ MICRO_TUNEL = ((5, 1), )
     (MICRO_TUNEL, (E1, S1), 1, 3),
     # micro tunel de un solo casillero, dos robots escaneadores
     (MICRO_TUNEL, (E1, E2), 1, 3),
+
+    # casos chicos
+    (MINI_TUNEL_RECTO, (E1, ), 4, 3),
+    (MINI_TUNEL_RECTO, (E1, S1), 4, 3),
+    (MINI_TUNEL_RECTO, (E1, E2), 4, 3),
+    (MINI_TUNEL_L, (E1, ), 5, 3),
+    (MINI_TUNEL_L, (E1, S1), 5, 3),
+    (MINI_TUNEL_L, (E1, E2), 5, 3),
+    (MINI_TUNEL_T, (E1, ), 9, 3),
+    (MINI_TUNEL_T, (E1, S1), 9, 3),
+    (MINI_TUNEL_T, (E1, E2), 9, 3),
+
+    # ejemplos chicos pero ya requiriendo recarga con robot de soporte, o
+    # dos robots sin recarga
+    (MINI_TUNEL_CRUZ, (E1, S1), 17, 3),
+    (MINI_TUNEL_CRUZ, (E1, E2), 13, 3),
 
     # casos grandes! (pendiente, vamos a estar agregando)
     # (DIBUJO_CONSIGNA, (E1, S1), None, None),
@@ -105,7 +126,7 @@ def test_plan_es_correcto(planear_escaneo, tuneles, robots, pasos_esperados, lim
         id_robot: {
             "tipo": tipo_robot,
             "coords": ENTRADA,
-            "carga": 2500,
+            "carga": 1000,
         }
         for id_robot, tipo_robot in robots
     }
@@ -140,7 +161,7 @@ def test_plan_es_correcto(planear_escaneo, tuneles, robots, pasos_esperados, lim
                 assert estado_actual[id_robot]["carga"] >= 0, f"El paso {numero_paso} dejaría a un robot con carga de batería negativa: {id_robot}"
                 try:
                     tuneles_pendientes.remove(target_accion)
-                except ValueError:
+                except KeyError:
                     pass
         elif tipo_accion == "cargar":
             estado_actual[target_accion]["carga"] = 2500
