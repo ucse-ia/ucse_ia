@@ -188,6 +188,10 @@ MINA_MEDIANA = (
     # casos medianos
     pytest.param(MINA_MEDIANA, (E1, S1), 48, 15, id="mina_mediana_1_explorador_1_soporte"),
     pytest.param(MINA_MEDIANA, (E1, E2, S1), 45, 15, id="mina_mediana_2_exploradores_1_soporte"),
+
+    # casos grandes
+    pytest.param(MINA_MEDIANA, (E1, E2, E3, S1, S2), 44, 60, id="mina_mediana_3_exploradores_2_soportes"),
+
 ))
 def test_plan_es_correcto(planear_escaneo, tuneles, robots, pasos_esperados, limite_segs):
     mensaje_si_demora = (f"La prueba con tuneles {tuneles} y robots {robots} demoró demasiado "
