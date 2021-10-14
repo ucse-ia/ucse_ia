@@ -141,31 +141,34 @@ MINA_OCHO = (
     # casos super básicos
 
     # micro tunel de un solo casillero, un solo robot escaneador
-    (MINA_UN_CASILLERO, (E1, ), 1, 3),
+    pytest.param(MINA_UN_CASILLERO, (E1, ), 1, 3, id="1_casillero_1_explorador"),
     # micro tunel de un solo casillero, un robot de cada tipo
-    (MINA_UN_CASILLERO, (E1, S1), 1, 3),
+    pytest.param(MINA_UN_CASILLERO, (E1, S1), 1, 3, id="1_casillero_1_explorador_1_soporte"),
     # micro tunel de un solo casillero, dos robots escaneadores
-    (MINA_UN_CASILLERO, (E1, E2), 1, 3),
+    pytest.param(MINA_UN_CASILLERO, (E1, E2), 1, 3, id="1_casillero_2_exploradores"),
 
     # casos chicos
-    (MINA_TUNEL_RECTO, (E1, ), 4, 3),
-    (MINA_TUNEL_RECTO, (E1, S1), 4, 3),
-    (MINA_TUNEL_RECTO, (E1, E2), 4, 3),
-    (MINA_L, (E1, ), 5, 3),
-    (MINA_L, (E1, S1), 5, 3),
-    (MINA_L, (E1, E2), 5, 3),
-    (MINA_T, (E1, ), 9, 3),
-    (MINA_T, (E1, S1), 9, 3),
-    (MINA_T, (E1, E2), 9, 3),
+    pytest.param(MINA_TUNEL_RECTO, (E1, ), 4, 3, id="tunel_recto_1_explorador"),
+    pytest.param(MINA_TUNEL_RECTO, (E1, S1), 4, 3, id="tunel_recto_1_explorador_1_soporte"),
+    pytest.param(MINA_TUNEL_RECTO, (E1, E2), 4, 3, id="tunel_recto_2_exploradores"),
+    pytest.param(MINA_TUNEL_ANCHO, (E1, ), 8, 3, id="tunel_ancho_1_explorador"),
+    pytest.param(MINA_TUNEL_ANCHO, (E1, S1), 8, 3, id="tunel_ancho_1_explorador_1_soporte"),
+    pytest.param(MINA_TUNEL_ANCHO, (E1, E2), 8, 3, id="tunel_ancho_2_exploradores"),
+    pytest.param(MINA_L, (E1, ), 5, 3, id="mina_L_1_explorador"),
+    pytest.param(MINA_L, (E1, S1), 5, 3, id="mina_L_1_explorador_1_soporte"),
+    pytest.param(MINA_L, (E1, E2), 5, 3, id="mina_L_2_exploradores"),
+    pytest.param(MINA_T, (E1, ), 9, 3, id="mina_T_1_explorador"),
+    pytest.param(MINA_T, (E1, S1), 9, 3, id="mina_T_1_explorador_1_soporte"),
+    pytest.param(MINA_T, (E1, E2), 9, 3, id="mina_T_2_exploradores"),
 
     # ejemplos chicos pero ya requiriendo recarga con robot de soporte, o
     # dos robots sin recarga
-    (MINA_CRUZ, (E1, S1), 18, 3),
-    (MINA_CRUZ, (E1, E2), 14, 3),
-    (MINA_E, (E1, S1), 23, 3),
-    (MINA_E, (E1, E2), 16, 3),
-    (MINA_OCHO, (E1, S1), 23, 3),
-    (MINA_OCHO, (E1, E2), 20, 3),
+    pytest.param(MINA_CRUZ, (E1, S1), 18, 3, id="mina_cruz_1_explorador_1_soporte"),
+    pytest.param(MINA_CRUZ, (E1, E2), 14, 3, id="mina_cruz_2_exploradores"),
+    pytest.param(MINA_E, (E1, S1), 23, 3, id="mina_E_1_explorador_1_soporte"),
+    pytest.param(MINA_E, (E1, E2), 16, 3, id="mina_E_2_exploradores"),
+    pytest.param(MINA_OCHO, (E1, S1), 23, 3, id="mina_8_1_explorador_1_soporte"),
+    pytest.param(MINA_OCHO, (E1, E2), 20, 3, id="mina_8_2_exploradores"),
 
     # casos grandes! (pendiente, vamos a estar agregando)
     # (DIBUJO_CONSIGNA, (E1, S1), None, None),
