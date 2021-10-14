@@ -141,13 +141,14 @@ MINA_OCHO = (
 #    [][][][]
 #    []    [][]
 # e[][][][][]    []
-#    []    []    []
+#    []    []    [][][]
 #    [][][][][][][]
-MINA_GRANDE = (
+MINA_MEDIANA = (
     (5, 1), (5, 2), (5, 3), (5, 4), (5, 5),
     (4, 2), (3, 2), (3, 3), (3, 4), (3, 5), (4, 5), (4, 6),
-    (6, 2), (7, 2), (7, 3), (7, 4), (7, 5),
+    (6, 2), (7, 2), (7, 3), (7, 4), (7, 5), (6, 5),
     (7, 6), (7, 7), (7, 8), (6, 8), (5, 8),
+    (6, 9), (6, 10),
 )
 
 @pytest.mark.dependency(depends=["test_funcion_bien_definida"])
@@ -184,9 +185,9 @@ MINA_GRANDE = (
     pytest.param(MINA_OCHO, (E1, S1), 23, 5, id="mina_8_1_explorador_1_soporte"),
     pytest.param(MINA_OCHO, (E1, E2), 20, 5, id="mina_8_2_exploradores"),
 
-    # casos grandes
-    pytest.param(MINA_GRANDE, (E1, S1), 57, 30, id="mina_grande_1_explorador_1_soporte"),
-    pytest.param(MINA_GRANDE, (E1, E2, S1), 43, 30, id="mina_grande_2_exploradores_1_soporte"),
+    # casos medianos
+    pytest.param(MINA_MEDIANA, (E1, S1), 48, 15, id="mina_mediana_1_explorador_1_soporte"),
+    pytest.param(MINA_MEDIANA, (E1, E2, S1), 45, 15, id="mina_mediana_2_exploradores_1_soporte"),
 ))
 def test_plan_es_correcto(planear_escaneo, tuneles, robots, pasos_esperados, limite_segs):
     mensaje_si_demora = (f"La prueba con tuneles {tuneles} y robots {robots} demoró demasiado "
