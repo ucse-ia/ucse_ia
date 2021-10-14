@@ -177,16 +177,16 @@ MINA_GRANDE = (
 
     # ejemplos chicos pero ya requiriendo recarga con robot de soporte, o
     # dos robots sin recarga
-    pytest.param(MINA_CRUZ, (E1, S1), 18, 3, id="mina_cruz_1_explorador_1_soporte"),
-    pytest.param(MINA_CRUZ, (E1, E2), 14, 3, id="mina_cruz_2_exploradores"),
-    pytest.param(MINA_E, (E1, S1), 23, 3, id="mina_E_1_explorador_1_soporte"),
-    pytest.param(MINA_E, (E1, E2), 16, 3, id="mina_E_2_exploradores"),
-    pytest.param(MINA_OCHO, (E1, S1), 23, 3, id="mina_8_1_explorador_1_soporte"),
-    pytest.param(MINA_OCHO, (E1, E2), 20, 3, id="mina_8_2_exploradores"),
+    pytest.param(MINA_CRUZ, (E1, S1), 18, 5, id="mina_cruz_1_explorador_1_soporte"),
+    pytest.param(MINA_CRUZ, (E1, E2), 14, 5, id="mina_cruz_2_exploradores"),
+    pytest.param(MINA_E, (E1, S1), 23, 5, id="mina_E_1_explorador_1_soporte"),
+    pytest.param(MINA_E, (E1, E2), 16, 5, id="mina_E_2_exploradores"),
+    pytest.param(MINA_OCHO, (E1, S1), 23, 5, id="mina_8_1_explorador_1_soporte"),
+    pytest.param(MINA_OCHO, (E1, E2), 20, 5, id="mina_8_2_exploradores"),
 
     # casos grandes
-    pytest.param(MINA_GRANDE, (E1, S1), 57, 15, id="mina_grande_1_explorador_1_soporte"),
-    pytest.param(MINA_GRANDE, (E1, E2, S1), 43, 15, id="mina_grande_2_exploradores_1_soporte"),
+    pytest.param(MINA_GRANDE, (E1, S1), 57, 30, id="mina_grande_1_explorador_1_soporte"),
+    pytest.param(MINA_GRANDE, (E1, E2, S1), 43, 30, id="mina_grande_2_exploradores_1_soporte"),
 ))
 def test_plan_es_correcto(planear_escaneo, tuneles, robots, pasos_esperados, limite_segs):
     mensaje_si_demora = (f"La prueba con tuneles {tuneles} y robots {robots} demoró demasiado "
