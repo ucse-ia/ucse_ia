@@ -73,8 +73,9 @@ MICRO_TUNEL = ((5, 1), )
 MINI_TUNEL_RECTO = ((5, 1), (5, 2), (5, 3), (5, 4))
 MINI_TUNEL_L = ((5, 1), (5, 2), (5, 3), (4, 3), (3, 3))
 MINI_TUNEL_T = ((5, 1), (5, 2), (5, 3), (4, 3), (3, 3), (6, 3), (7, 3))
-# esta mina requiere recarga
-MINI_TUNEL_CRUZ = ((5, 1), (5, 2), (5, 3), (5, 4), (4, 3), (3, 3), (6, 3), (7, 3))
+# estas minas requieren recarga o múltiples robots sin recarga
+TUNEL_CRUZ = ((5, 1), (5, 2), (5, 3), (5, 4), (4, 3), (3, 3), (6, 3), (7, 3))
+TUNEL_TENEDOR = ((5, 1), (4, 1), (3, 1), (6, 1), (7, 1), (3, 2), (3, 3), (5, 2), (5, 3), (7, 2), (7, 3))
 
 @pytest.mark.dependency(depends=["test_funcion_bien_definida"])
 @pytest.mark.parametrize("tuneles,robots,pasos_esperados,limite_segs", (
@@ -100,8 +101,10 @@ MINI_TUNEL_CRUZ = ((5, 1), (5, 2), (5, 3), (5, 4), (4, 3), (3, 3), (6, 3), (7, 3
 
     # ejemplos chicos pero ya requiriendo recarga con robot de soporte, o
     # dos robots sin recarga
-    (MINI_TUNEL_CRUZ, (E1, S1), 17, 3),
-    (MINI_TUNEL_CRUZ, (E1, E2), 13, 3),
+    (TUNEL_CRUZ, (E1, S1), 17, 3),
+    (TUNEL_CRUZ, (E1, E2), 13, 3),
+    (TUNEL_TENEDOR, (E1, S1), 20, 3),
+    (TUNEL_TENEDOR, (E1, E2), 14, 3),
 
     # casos grandes! (pendiente, vamos a estar agregando)
     # (DIBUJO_CONSIGNA, (E1, S1), None, None),
