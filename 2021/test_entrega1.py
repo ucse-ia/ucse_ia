@@ -68,43 +68,73 @@ E2 = ("e2", "escaneador")
 E3 = ("e3", "escaneador")
 S1 = ("s1", "soporte")
 S2 = ("s2", "soporte")
-# ejemplos de minas
-MICRO_TUNEL = ((5, 1), )
-MINI_TUNEL_RECTO = ((5, 1), (5, 2), (5, 3), (5, 4))
-MINI_TUNEL_L = ((5, 1), (5, 2), (5, 3), (4, 3), (3, 3))
-MINI_TUNEL_T = ((5, 1), (5, 2), (5, 3), (4, 3), (3, 3), (6, 3), (7, 3))
+
+# ejemplos de minas super simples
+
+# e[]
+MINA_UN_CASILLERO = ((5, 1), )
+
+# e[][][]
+MINA_TUNEL_RECTO = ((5, 1), (5, 2), (5, 3), (5, 4))
+
+#      []
+#      []
+# e[][][]
+MINA_L = ((5, 1), (5, 2), (5, 3), (4, 3), (3, 3))
+
+#      []
+#      []
+# e[][][]
+#      []
+#      []
+MINA_T = ((5, 1), (5, 2), (5, 3), (4, 3), (3, 3), (6, 3), (7, 3))
+
 # estas minas requieren recarga o múltiples robots sin recarga
-TUNEL_CRUZ = ((5, 1), (5, 2), (5, 3), (5, 4), (4, 3), (3, 3), (6, 3), (7, 3))
-TUNEL_TENEDOR = ((5, 1), (4, 1), (3, 1), (6, 1), (7, 1), (3, 2), (3, 3), (5, 2), (5, 3), (7, 2), (7, 3))
+
+#      []
+#      []
+# e[][][][][]
+#      []
+#      []
+MINA_CRUZ = ((5, 1), (5, 2), (5, 3), (5, 4), (5, 5), (4, 3), (3, 3), (6, 3), (7, 3))
+
+#    [][][]
+#    []
+# e[][][][]
+#    []
+#    [][][]
+MINA_TENEDOR = ((5, 1), (5, 2), (4, 2), (3, 2), (6, 2), (7, 2), (3, 3), (3, 4), (5, 3), (5, 4), (7, 3), (7, 4))
 
 @pytest.mark.dependency(depends=["test_funcion_bien_definida"])
 @pytest.mark.parametrize("tuneles,robots,pasos_esperados,limite_segs", (
     # casos super básicos
 
     # micro tunel de un solo casillero, un solo robot escaneador
-    (MICRO_TUNEL, (E1, ), 1, 3),
+    (MINA_UN_CASILLERO, (E1, ), 1, 3),
     # micro tunel de un solo casillero, un robot de cada tipo
-    (MICRO_TUNEL, (E1, S1), 1, 3),
+    (MINA_UN_CASILLERO, (E1, S1), 1, 3),
     # micro tunel de un solo casillero, dos robots escaneadores
-    (MICRO_TUNEL, (E1, E2), 1, 3),
+    (MINA_UN_CASILLERO, (E1, E2), 1, 3),
 
     # casos chicos
-    (MINI_TUNEL_RECTO, (E1, ), 4, 3),
-    (MINI_TUNEL_RECTO, (E1, S1), 4, 3),
-    (MINI_TUNEL_RECTO, (E1, E2), 4, 3),
-    (MINI_TUNEL_L, (E1, ), 5, 3),
-    (MINI_TUNEL_L, (E1, S1), 5, 3),
-    (MINI_TUNEL_L, (E1, E2), 5, 3),
-    (MINI_TUNEL_T, (E1, ), 9, 3),
-    (MINI_TUNEL_T, (E1, S1), 9, 3),
-    (MINI_TUNEL_T, (E1, E2), 9, 3),
+    (MINA_TUNEL_RECTO, (E1, ), 4, 3),
+    (MINA_TUNEL_RECTO, (E1, S1), 4, 3),
+    (MINA_TUNEL_RECTO, (E1, E2), 4, 3),
+    (MINA_L, (E1, ), 5, 3),
+    (MINA_L, (E1, S1), 5, 3),
+    (MINA_L, (E1, E2), 5, 3),
+    (MINA_T, (E1, ), 9, 3),
+    (MINA_T, (E1, S1), 9, 3),
+    (MINA_T, (E1, E2), 9, 3),
 
     # ejemplos chicos pero ya requiriendo recarga con robot de soporte, o
     # dos robots sin recarga
-    (TUNEL_CRUZ, (E1, S1), 17, 3),
-    (TUNEL_CRUZ, (E1, E2), 13, 3),
-    (TUNEL_TENEDOR, (E1, S1), 20, 3),
-    (TUNEL_TENEDOR, (E1, E2), 14, 3),
+    (MINA_CRUZ, (E1, S1), 18, 3),
+    (MINA_CRUZ, (E1, E2), 14, 3),
+    (MINA_TENEDOR, (E1, S1), 23, 3),
+    (MINA_TENEDOR, (E1, E2), 16, 3),
+
+
 
     # casos grandes! (pendiente, vamos a estar agregando)
     # (DIBUJO_CONSIGNA, (E1, S1), None, None),
