@@ -74,8 +74,10 @@ S2 = ("s2", "soporte")
 # e[]
 MINA_UN_CASILLERO = ((5, 1), )
 
-# e[][][][]
-MINA_TUNEL_RECTO = ((5, 1), (5, 2), (5, 3), (5, 4))
+# e[][][][][][]
+MINA_TUNEL_RECTO = (
+    (5, 1), (5, 2), (5, 3), (5, 4), (5, 5), (5, 6),
+)
 
 #    1 2 3 4
 # 5 e[][][][]
@@ -203,9 +205,9 @@ MINA_GRANDE = (
     pytest.param(MINA_UN_CASILLERO, (E1, E2), 1, 3, id="1_casillero_2_exploradores"),
 
     # casos chicos
-    pytest.param(MINA_TUNEL_RECTO, (E1, ), 4, 3, id="tunel_recto_1_explorador"),
-    pytest.param(MINA_TUNEL_RECTO, (E1, S1), 4, 3, id="tunel_recto_1_explorador_1_soporte"),
-    pytest.param(MINA_TUNEL_RECTO, (E1, E2), 4, 3, id="tunel_recto_2_exploradores"),
+    pytest.param(MINA_TUNEL_RECTO, (E1, ), 6, 3, id="tunel_recto_1_explorador"),
+    pytest.param(MINA_TUNEL_RECTO, (E1, S1), 6, 3, id="tunel_recto_1_explorador_1_soporte"),
+    pytest.param(MINA_TUNEL_RECTO, (E1, E2), 6, 3, id="tunel_recto_2_exploradores"),
     pytest.param(MINA_TUNEL_ANCHO, (E1, ), 8, 3, id="tunel_ancho_1_explorador"),
     pytest.param(MINA_TUNEL_ANCHO, (E1, S1), 8, 3, id="tunel_ancho_1_explorador_1_soporte"),
     pytest.param(MINA_TUNEL_ANCHO, (E1, E2), 8, 3, id="tunel_ancho_2_exploradores"),
