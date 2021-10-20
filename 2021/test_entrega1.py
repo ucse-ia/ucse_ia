@@ -73,10 +73,12 @@ S2 = ("s2", "soporte")
 
 # ejemplos de minas super simples
 
-# e[]
+#    1
+# 5 e[]
 MINA_UN_CASILLERO = ((5, 1), )
 
-# e[][][][][][]
+#    1 2 3 4 5 6
+# 5 e[][][][][][]
 MINA_TUNEL_RECTO = (
     (5, 1), (5, 2), (5, 3), (5, 4), (5, 5), (5, 6),
 )
@@ -114,6 +116,38 @@ MINA_T = (
 )
 
 # estas minas requieren recarga o múltiples robots sin recarga
+
+#    1 2 3 4 5 6 7 8 9 10 11
+# 5 e[][][][][][][][][][][]
+MINA_TUNEL_RECTO_LARGO = (
+    (5, 1), (5, 2), (5, 3), (5, 4), (5, 5), (5, 6), (5, 7), (5, 8), (5, 9), (5, 10), (5, 11),
+)
+
+#    1 2 3 4 5 6
+# 5 e[][][][][][]
+# 6  [][][][][][]
+MINA_TUNEL_ANCHO_LARGO = (
+    (5, 1), (5, 2), (5, 3), (5, 4), (5, 5), (5, 6),
+    (6, 1), (6, 2), (6, 3), (6, 4), (6, 5), (6, 6),
+)
+
+#    1 2 3
+# 2      []
+# 3      []
+# 4      []
+# 5 e[][][]
+# 6      []
+# 7      []
+# 8      []
+MINA_T_LARGA = (
+    (2, 3),
+    (3, 3),
+    (4, 3),
+    (5, 1), (5, 2), (5, 3),
+    (6, 3),
+    (7, 3),
+    (8, 3),
+)
 
 #    1 2 3 4 5
 # 3      []
@@ -199,14 +233,12 @@ MINA_GRANDE = (
 @pytest.mark.parametrize("tuneles,robots,pasos_esperados,limite_segs", (
     # casos super básicos
 
-    # micro tunel de un solo casillero, un solo robot escaneador
+    # micro tunel de un casillero, para probar lo más simple posible
     pytest.param(MINA_UN_CASILLERO, (E1, ), 1, 3, id="1_casillero_1_explorador"),
-    # micro tunel de un solo casillero, un robot de cada tipo
     pytest.param(MINA_UN_CASILLERO, (E1, S1), 1, 3, id="1_casillero_1_explorador_1_soporte"),
-    # micro tunel de un solo casillero, dos robots escaneadores
     pytest.param(MINA_UN_CASILLERO, (E1, E2), 1, 3, id="1_casillero_2_exploradores"),
 
-    # casos chicos
+    # casos chicos donde un robot solo y sin recargas es suficiente
     pytest.param(MINA_TUNEL_RECTO, (E1, ), 6, 3, id="tunel_recto_1_explorador"),
     pytest.param(MINA_TUNEL_RECTO, (E1, S1), 6, 3, id="tunel_recto_1_explorador_1_soporte"),
     pytest.param(MINA_TUNEL_RECTO, (E1, E2), 6, 3, id="tunel_recto_2_exploradores"),
@@ -220,23 +252,26 @@ MINA_GRANDE = (
     pytest.param(MINA_T, (E1, S1), 9, 3, id="mina_T_1_explorador_1_soporte"),
     pytest.param(MINA_T, (E1, E2), 9, 3, id="mina_T_2_exploradores"),
 
-    # ejemplos chicos pero ya requiriendo recarga con robot de soporte, o
-    # dos robots sin recarga
-    pytest.param(MINA_CRUZ, (E1, S1), 18, 5, id="mina_cruz_1_explorador_1_soporte"),
-    pytest.param(MINA_CRUZ, (E1, E2), 14, 5, id="mina_cruz_2_exploradores"),
-    pytest.param(MINA_E, (E1, S1), 23, 5, id="mina_E_1_explorador_1_soporte"),
-    pytest.param(MINA_E, (E1, E2), 16, 5, id="mina_E_2_exploradores"),
-    pytest.param(MINA_OCHO, (E1, S1), 23, 5, id="mina_8_1_explorador_1_soporte"),
-    pytest.param(MINA_OCHO, (E1, E2), 20, 5, id="mina_8_2_exploradores"),
+    # casos chicos pero que ya requieren de al menos una recarga o dos exploradores
+    pytest.param(MINA_TUNEL_RECTO_LARGO, (E1, S1), 13, 10, id="tunel_recto_largo_1_explorador_1_soporte"),
+    pytest.param(MINA_TUNEL_ANCHO_LARGO, (E1, E2), 13, 10, id="mina_tunel_ancho_largo_largo_2_exploradores"),
+    pytest.param(MINA_T_LARGA, (E1, S1), 15, 10, id="mina_T_larga_1_explorador_1_soporte"),
+    pytest.param(MINA_T_LARGA, (E1, E2), 12, 10, id="mina_T_larga_2_exploradores"),
+    pytest.param(MINA_CRUZ, (E1, E2), 14, 10, id="mina_cruz_2_exploradores"),
+    pytest.param(MINA_E, (E1, E2), 16, 10, id="mina_E_2_exploradores"),
+    pytest.param(MINA_OCHO, (E1, E2), 20, 20, id="mina_8_2_exploradores"),
+    pytest.param(MINA_CRUZ, (E1, S1), 17, 50, id="mina_cruz_1_explorador_1_soporte"),
 
-    # casos medianos
-    pytest.param(MINA_MEDIANA, (E1, S1), 48, 15, id="mina_mediana_1_explorador_1_soporte"),
-    pytest.param(MINA_MEDIANA, (E1, E2, S1), 45, 15, id="mina_mediana_2_exploradores_1_soporte"),
+    # casos pesados
+    pytest.param(MINA_TUNEL_ANCHO_LARGO, (E1, S1), 15, 120, id="mina_tunel_ancho_largo_largo_1_explorador_1_soporte"),  # sorprendentemente pesado!
+    pytest.param(MINA_OCHO, (E1, S1), 23, 200, id="mina_8_1_explorador_1_soporte"),
+    pytest.param(MINA_E, (E1, S1), 21, 500, id="mina_E_1_explorador_1_soporte"),
 
-    # casos grandes
-    pytest.param(MINA_MEDIANA, (E1, E2, E3, S1, S2), 44, 60, id="mina_mediana_3_exploradores_2_soportes"),
-    pytest.param(MINA_GRANDE, (E1, S1), 126, 30, id="mina_grande_1_explorador_1_soporte"),
-
+    # casos *extremadamente* pesados, deshabilitados porque probablemente no puedan resolverlos
+    # pytest.param(MINA_MEDIANA, (E1, S1), 1000, 1, id="mina_mediana_1_explorador_1_soporte"),
+    # pytest.param(MINA_MEDIANA, (E1, E2, S1), 1000, 1, id="mina_mediana_2_exploradores_1_soporte"),
+    # pytest.param(MINA_MEDIANA, (E1, E2, E3, S1, S2), 1000, 1, id="mina_mediana_3_exploradores_2_soportes"),
+    # pytest.param(MINA_GRANDE, (E1, S1), 1000, 1, id="mina_grande_1_explorador_1_soporte"),
 ))
 def test_plan_es_correcto(planear_escaneo, tuneles, robots, pasos_esperados, limite_segs):
     mensaje_si_demora = (f"La prueba con tuneles {tuneles} y robots {robots} demoró demasiado "
