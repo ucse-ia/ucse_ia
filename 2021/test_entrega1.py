@@ -21,8 +21,10 @@ def warning_si_demora(limite_segs, mensaje):
     yield
 
     fin = datetime.now()
-    if limite_segs is not None and (fin - inicio).total_seconds() > limite_segs:
-        warnings.warn(mensaje)
+
+    duracion_segs = int((fin - inicio).total_seconds())
+    if limite_segs is not None and duracion_segs > limite_segs:
+        warnings.warn(mensaje + f" [duración: {duracion_segs} segundos]")
 
 
 @pytest.mark.dependency()
