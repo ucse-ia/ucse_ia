@@ -5,6 +5,8 @@ from simpleai.search import (
     uniform_cost,
     limited_depth_first,
     iterative_limited_depth_first,
+    astar,
+    greedy,
 )
 from simpleai.search.viewers import WebViewer, BaseViewer
 
@@ -57,23 +59,47 @@ class EightPuzzleProblem(SearchProblem):
 
         return tuple(tuple(fila) for fila in state_modificable)
 
+    def heuristic(self, state):
+        distancias_mal = 0
+        for i_fila, fila in enumerate(state):
+            for i_col, pieza_actual in enumerate(fila):
+                if pieza_actual != 0:
+                    fila_corr, col_corr = buscar(GOAL, pieza_actual)
+                    distancias_mal += abs(i_fila - fila_corr) + abs(i_col - col_corr)
 
+        return distancias_mal
+
+
+
+
+
+# necesita 3 movimientos
+# INICIAL = (
+    # (1, 0, 3),
+    # (4, 2, 6),
+    # (7, 5, 8),
+# )
+
+# necesita 23 movimientos
 INICIAL = (
-    (1, 0, 3),
-    (4, 2, 6),
-    (7, 5, 8),
+    (4, 6, 0),
+    (8, 3, 5),
+    (1, 2, 7),
 )
+
 
 viewer = WebViewer()
 #viewer = BaseViewer()
 # result = breadth_first(EightPuzzleProblem(INICIAL),
                        # graph_search=True)
-result = breadth_first(EightPuzzleProblem(INICIAL),
-                       viewer=viewer)
+# result = breadth_first(EightPuzzleProblem(INICIAL),
+                       # viewer=viewer)
 # result = depth_first(EightPuzzleProblem(INICIAL), graph_search=True)
 # result = uniform_cost(EightPuzzleProblem(INICIAL))
 # result = limited_depth_first(EightPuzzleProblem(INICIAL), 5)
 # result = iterative_limited_depth_first(EightPuzzleProblem(INICIAL))
+# result = greedy(EightPuzzleProblem(INICIAL))
+result = astar(EightPuzzleProblem(INICIAL))
 
 print("Estado meta:")
 print(result.state)
@@ -81,6 +107,8 @@ print(result.state)
 for action, state in result.path():
     print("Haciendo", action, "llegué a:")
     print(state)
+
+print("Profundidad:", len(list(result.path())))
 
 print("Stats:")
 print(viewer.stats)
