@@ -72,13 +72,15 @@ class MisionerosProblem(SearchProblem):
         return mis_izq, can_izq, orilla
 
     def heuristic(self, state):
-        pass
+        mis_izq, can_izq, _ = state
+        return mis_izq + can_izq - 1
 
 
 if __name__ == "__main__":
     viewer = BaseViewer()
     #result = depth_first(MisionerosProblem(INICIAL), graph_search=True, viewer=viewer)
-    result = breadth_first(MisionerosProblem(INICIAL), graph_search=True, viewer=viewer)
+    #result = breadth_first(MisionerosProblem(INICIAL), graph_search=True, viewer=viewer)
+    result = astar(MisionerosProblem(INICIAL), viewer=viewer)
 
     for action, state in result.path():
         print("Haciendo", action, "llegué a:")
