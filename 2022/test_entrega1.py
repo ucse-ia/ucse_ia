@@ -243,7 +243,7 @@ def test_plan_es_correcto(jugar, tablero, maximos_movimientos, pasos_esperados, 
 
 
     # validamos que no quedaron cajas sin ubicar
-    assert estado["cajas"] == objetivos, f"La secuencia de pasos no ubica todas las cajas en los objetivos"
+    assert estado["cajas"] == objetivos, f"La secuencia de pasos no ubica todas las cajas ({estado['cajas']} en los objetivos {objetivos}"
 
     # validamos que la cantidad de viajes sea la esperada para el caso
     if pasos_esperados is not None:
