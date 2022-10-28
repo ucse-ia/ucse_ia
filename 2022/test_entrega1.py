@@ -42,9 +42,9 @@ def test_modulo_existe():
 @pytest.fixture()
 def jugar():
     import entrega1
-    funcion_planear = getattr(entrega1, "jugar", None)
+    funcion_jugar = getattr(entrega1, "jugar", None)
 
-    return funcion_planear
+    return funcion_jugar
 
 
 @pytest.mark.dependency(depends=["test_modulo_existe"])
