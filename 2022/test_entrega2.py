@@ -118,4 +118,14 @@ def test_resultado_es_correcto(armar_mapa, filas, columnas, cantidad_paredes, ca
     for esquina in esquinas:
         assert esquina not in res_cajas, f"El resultado posee una caja en una esquina: {esquina}"
 
+    for caja in res_cajas:
+        adyacentes = []
+        for pared in res_paredes:
+            if abs(caja[0] - pared[0]) + abs(caja[1] - pared[1]) == 1:
+                adyacentes.append(pared)
+        if caja[0] in (0, filas - 1) or caja[1] in (0, columnas - 1):
+            assert len(adyacentes) == 0, f"La caja que está en el borde {caja} tiene paredes adyacentes: {adyacentes}, pero no debería tener ninguna"
+        else:
+            assert len(adyacentes) < 2, f"La caja {caja} tiene demasiadas paredes adyacentes: {adyacentes}, no debería tener más de una."
+
     assert set(res_cajas) != set(res_objetivos), f"El resultado es un mapa ya ganado: cajas en {res_cajas} y objetivos en {res_objetivos}"
