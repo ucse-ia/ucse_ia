@@ -202,7 +202,7 @@ def test_plan_es_correcto(jugar, tablero, maximos_movimientos, pasos_esperados, 
                          "no está demasiado bien")
 
     with warning_si_demora(limite_segs, mensaje_si_demora):
-        secuencia = jugar(paredes, cajas, objetivos, jugador, maximos_movimientos)
+        secuencia = jugar(list(paredes), list(cajas), list(objetivos), jugador, maximos_movimientos)
 
     # chequeamos la estructura de datos de forma muy básica
     assert isinstance(secuencia, list), \
