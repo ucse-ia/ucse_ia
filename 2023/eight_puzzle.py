@@ -1,9 +1,29 @@
-from simpleai.search import SearchProblem, iterative_limited_depth_first
+from simpleai.search import (
+    SearchProblem,
+    breadth_first,
+    uniform_cost,
+    depth_first,
+    limited_depth_first,
+    iterative_limited_depth_first,
+)
+from simpleai.search.viewers import BaseViewer, WebViewer
 
 
-#INITIAL = ((7, 2, 4), (5, None, 6), (8, 3, 1))
-INITIAL = ((1, 4, 2), (3, 5, 8), (6, 7, None))
-GOAL = ((None, 1, 2), (3, 4, 5), (6, 7, 8))
+INITIAL = (
+    (7, 2, 4),
+    (5, "x", 6),
+    (8, 3, 1),
+)
+# INITIAL = (
+    # (1, 4, 2),
+    # ("x", 5, 8),
+    # (3, 6, 7),
+# )
+GOAL = (
+    ("x", 1, 2),
+    (3, 4, 5),
+    (6, 7, 8),
+)
 
 
 def find_token(state, token_to_find):
@@ -15,7 +35,7 @@ def find_token(state, token_to_find):
 
 class EightPuzzleProblem(SearchProblem):
     def actions(self, state):
-        empty_row, empty_col = find_token(state, None)
+        empty_row, empty_col = find_token(state, "x")
         actions = []
 
         if empty_row > 0:
@@ -30,13 +50,13 @@ class EightPuzzleProblem(SearchProblem):
         return actions
 
     def result(self, state, action):
-        empty_row, empty_col = find_token(state, None)
+        empty_row, empty_col = find_token(state, "x")
         other_row, other_col = action
 
         state = [list(row) for row in state]
 
         state[empty_row][empty_col] = state[other_row][other_col]
-        state[other_row][other_col] = None
+        state[other_row][other_col] = "x"
 
         state = tuple(tuple(row) for row in state)
 
@@ -50,9 +70,26 @@ class EightPuzzleProblem(SearchProblem):
 
 
 my_problem = EightPuzzleProblem(INITIAL)
-result = iterative_limited_depth_first(my_problem)
 
-for action, state in result.path():
-    print("A:", action)
-    print("S:")
-    print(*state, sep="\n")
+v = BaseViewer()
+#v = WebViewer()
+
+result = breadth_first(my_problem)
+#result = uniform_cost(my_problem)
+#result = depth_first(my_problem, graph_search=True)
+#result = limited_depth_first(my_problem, 20, viewer=v)
+#result = limited_depth_first(my_problem, 6, viewer=v)
+#result = iterative_limited_depth_first(my_problem, viewer=v)
+
+if result is None:
+    print("No solution")
+else:
+    print("Final cost:", result.cost)
+
+    for action, state in result.path():
+        print("A:", action)
+        print("S:")
+        print(*state, sep="\n")
+
+print("Stats:")
+print(v.stats)
