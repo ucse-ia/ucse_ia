@@ -5,6 +5,8 @@ from simpleai.search import (
     depth_first,
     limited_depth_first,
     iterative_limited_depth_first,
+    greedy,
+    astar,
 )
 from simpleai.search.viewers import BaseViewer, WebViewer
 
@@ -68,28 +70,42 @@ class EightPuzzleProblem(SearchProblem):
     def is_goal(self, state):
         return state == GOAL
 
+    def heuristic(self, state):
+        total_distance = 0
+
+        for current_row, row in enumerate(state):
+            for current_col, token in enumerate(row):
+                if token != "x":
+                    goal_row, goal_col = find_token(GOAL, token)
+                    total_distance += abs(goal_row - current_row) + abs(goal_col - current_col)
+
+        return total_distance
+
+
+
 
 my_problem = EightPuzzleProblem(INITIAL)
 
 v = BaseViewer()
 #v = WebViewer()
 
-result = breadth_first(my_problem)
+#result = breadth_first(my_problem)
 #result = uniform_cost(my_problem)
 #result = depth_first(my_problem, graph_search=True)
 #result = limited_depth_first(my_problem, 20, viewer=v)
 #result = limited_depth_first(my_problem, 6, viewer=v)
 #result = iterative_limited_depth_first(my_problem, viewer=v)
+result = astar(my_problem)
 
 if result is None:
     print("No solution")
 else:
-    print("Final cost:", result.cost)
-
     for action, state in result.path():
         print("A:", action)
         print("S:")
         print(*state, sep="\n")
 
-print("Stats:")
-print(v.stats)
+    print("Final cost:", result.cost)
+
+# print("Stats:")
+# print(v.stats)
