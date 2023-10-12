@@ -11,7 +11,7 @@ from simpleai.search import (
 from simpleai.search.csp import _find_conflicts
 
 
-N_REINAS = 10000
+N_REINAS = 1000
 
 # las variables son las 8 reinas
 variables = list(range(N_REINAS))
@@ -41,10 +41,19 @@ for reina1, reina2 in combinations(variables, 2):
     )
 
 
-problema = CspProblem(variables, dominios, restricciones)
-# solucion = backtrack(problema, variable_heuristic=MOST_CONSTRAINED_VARIABLE, value_heuristic=LEAST_CONSTRAINING_VALUE)
-solucion = min_conflicts(problema)
+def jugar():
+    problema = CspProblem(variables, dominios, restricciones)
+    solucion = min_conflicts(problema)
 
-print("Solución:")
-print(solucion)
-print(_find_conflicts(problema, solucion))
+    return solucion
+
+
+if __name__ == "__main__":
+    print("Resolviendo algo de ejemplo")
+    problema = CspProblem(variables, dominios, restricciones)
+    # solucion = backtrack(problema, variable_heuristic=MOST_CONSTRAINED_VARIABLE, value_heuristic=LEAST_CONSTRAINING_VALUE)
+    solucion = min_conflicts(problema)
+
+    print("Solución:")
+    print(solucion)
+    print(_find_conflicts(problema, solucion))
