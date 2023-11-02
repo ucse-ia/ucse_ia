@@ -108,7 +108,7 @@ def posiciones_actuales(posicion_esquina, forma):
 
     # caso que puede llevar un poco más de tiempo si no tienen suerte o no está tan bien hecho
 
-    (3, 4, 5, "OOLLTIIZZ--.", 60),
+    (3, 4, 5, "OOLLTIIZ--.", 60),
 ))
 def test_resultado_es_correcto(armar_tablero, pisos, filas, columnas, formas_piezas, limite_segs):
     salida = 0, 0, 0
