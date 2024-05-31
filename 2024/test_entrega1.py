@@ -212,6 +212,7 @@ def test_resultado_es_correcto(jugar, frascos, dificil, pasos_esperados, limite_
 
         print()
         print("PASO", numero_paso, ":", origen, "→", destino)
+        print()
         dibujar(frascos)
 
     # validamos que todos los frascos están o vacíos o llenos de un solo color
