@@ -71,21 +71,22 @@ CAPACIDAD_FRASCOS = 4
 def dibujar(frascos):
     """Utilidad simple para dibujar frascos fácilmente."""
     # números de frascos
-    lineas = ["".join(str(n + 1) for n in range(len(frascos)))]
+    lineas = ["".join(str(n + 1).center(3)
+                      for n in range(len(frascos)))]
 
     # contenidos de los frascos
     for linea_actual in range(CAPACIDAD_FRASCOS):
         linea = ""
         for frasco in frascos:
             if len(frasco) > linea_actual:
-                linea += frasco[linea_actual][0].upper()
+                linea += f"[{frasco[linea_actual][0].upper()}]"
             else:
-                linea += " "
+                linea += "[ ]"
         lineas.append(linea)
 
     # tapas
     lineas.append("".join(
-        "_" if len(frasco) == CAPACIDAD_FRASCOS and len(set(frasco)) == 1 else " "
+        "<=>" if len(frasco) == CAPACIDAD_FRASCOS and len(set(frasco)) == 1 else "   "
         for frasco in frascos
     ))
 
