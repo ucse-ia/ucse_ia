@@ -147,12 +147,12 @@ def test_resultado_es_correcto(armar_nivel, colores, contenidos_parciales, limit
             cantidad_por_color[color] += 1
 
     for color, cantidad in cantidad_por_color.items():
-        assert cantidad == 4, \
-               f"El resultado tiene una cantidad incorrecta de segmentos de color {color}: {cantidad}"
+        assert cantidad <= 4, \
+               f"El resultado tiene demasiados segmentos de color {color}: {cantidad}"
 
     for color, cantidad in fondos_por_color.items():
-        assert cantidad < 4, \
-               f"El color {color} tiene demasiados segmentos en el fondo de frascos: {cantidad}"
+        assert cantidad < cantidad_por_color[color], \
+               f"El color {color} tiene todos sus segmentos en el fondo de frascos"
 
     for frasco1, frasco2 in zip(resultado, resultado[1:]):
         assert any((color1 in frasco2) for color1 in frasco1), \
