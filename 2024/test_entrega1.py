@@ -38,7 +38,7 @@ def test_modulo_existe():
     with warning_si_demora(1, mensaje_si_demora):
         try:
             import entrega1
-        except ImportError:
+        except ModuleNotFoundError:
             pytest.fail("No se encuentra el módulo entrega1.py")
 
 
