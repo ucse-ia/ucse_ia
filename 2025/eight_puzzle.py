@@ -95,7 +95,7 @@ class EightPuzzleProblem(SearchProblem):
 problem = EightPuzzleProblem(INICIAL)
 #result = depth_first(problem, graph_search=True)
 #result = breadth_first(problem)
-result = astar(problem)
+result = astar(problem, viewer=WebViewer())
 
 for action, state in result.path():
     print(action)
