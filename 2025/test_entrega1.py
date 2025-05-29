@@ -185,7 +185,12 @@ def test_resultado_es_correcto(
                     "segundos), probablemente algo no está bien")
 
     with duration_warning(time_limit_s, duration_msg):
+        print()
+        print("Resolviendo caso:")
+        print(case_description)
+        print("...")
         result = play_game(jedi_at, jedi_concentration, walls, droids)
+        print("Solución obtenida!")
 
     # otros helpers
     duration = {
@@ -215,7 +220,7 @@ def test_resultado_es_correcto(
     walls = set(walls)
     total_cost = 0  # in seconds
 
-    print("Pasos para el caso:", case_description)
+    print("Simulando pasos obtenidos...")
     # por cada accion, hacemos chequeos y vamos simulando todo para ver que sea posible
     for idx_action, action in enumerate(result):
         print(jedi_at, jedi_concentration, droids, "-->", action)
@@ -297,6 +302,8 @@ def test_resultado_es_correcto(
             for tile in disrupting_tiles:
                 assert tile not in droids, \
                     f"{action_error_prefix} no se puede descansar en {jedi_at} porque hay droides en {tile}"
+
+    print("Simulación de pasos finalizada!")
 
     # al final, el jedi debería haber eliminado todos los droides
     assert not droids, f"{error_prefix} al final del juego quedan droides vivos: {droids}"
