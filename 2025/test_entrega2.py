@@ -85,7 +85,7 @@ def test_funcion_bien_definida(build_map):
     # casos complicados por tener pocas soluciones posibles
 
     ((4, 4), 14, (), 5),  # pocas formas de no encerrar al jedi
-    ((3, 3), 0, (4, 4, 4, 4, 4, 2, 2, 2, 2), 5),  # pocas formas de que los droides no sumen mas de 6
+    ((4, 4), 0, (4,) * 8 + (2,) * 8, 5),  # pocas formas de que los droides no sumen mas de 6
     ((4, 4), 13, (4, 2, 4), 5),  # pocas formas de no encerrar al jedi y además drones complicados por la suma si están adyacentes
 ))
 def test_resultado_es_correcto(build_map, map_size, walls, droids, time_limit_s):
