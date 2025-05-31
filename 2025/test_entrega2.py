@@ -77,10 +77,10 @@ def test_funcion_bien_definida(build_map):
     ((3, 3), 0, (5,), 1),  # jedi y 1 grupo de droides
     ((3, 3), 1, (5,), 1),  # jedi y 1 grupo de droides y 1 pared
 
-    # casos más normales pero igual fáciles de resolver
+    # casos normales
 
-    ((3, 3), 4, (1, 1, 1), 3),
-    ((4, 6), 8, (5, 5, 3, 3, 1, 1), 10),
+    ((3, 3), 4, (4, 3, 2), 3),
+    ((4, 6), 10, (7, 7, 5, 5, 3, 3, 1, 1), 10),
 
     # casos complicados por tener pocas soluciones posibles
 
