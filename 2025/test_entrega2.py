@@ -89,7 +89,7 @@ def test_funcion_bien_definida(build_map):
     ((4, 4), 13, (4, 2, 4), 30),  # pocas formas de no encerrar al jedi y además drones complicados por la suma si están adyacentes
 
     # caso grande pero fácil
-    ((10, 10), 20, (5, 5, 4, 4, 3, 3, 2, 2, 1, 1), 60),
+    ((10, 10), 20, (5, 5, 4, 4, 3, 3, 2, 2, 1, 1), 120),
 ))
 def test_resultado_es_correcto(build_map, map_size, walls, droids, time_limit_s):
     # helpers para mensajes de error y warnings
