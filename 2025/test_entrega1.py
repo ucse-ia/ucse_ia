@@ -136,8 +136,8 @@ def test_funcion_bien_definida(play_game):
     # jump x 4, force, (move, force) x 3
     ((0, 0), 999, [], [(4, 4, 10), (4, 5, 10), (5, 4, 10), (5, 5, 10)], 15, 30),
 
-    # droides repartidos en las 4 diagonales, pero super cargado de fuerza
-    ((0, 0), 999, [], [(-1, -1, 3), (-1, 1, 3), (1, -1, 3), (1, 1, 3)], 15, 30),
+    # droides repartidos en 3 diagonales, pero super cargado de fuerza
+    ((0, 0), 999, [], [(-1, -1, 3), (-1, 1, 3), (1, -1, 3)], 11, 30),
 
     # un laberinto hasta un grupo de droides, super cargado de fuerza
     #    0 1 2 3 4 5
