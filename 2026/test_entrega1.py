@@ -61,11 +61,9 @@ def test_funcion_bien_definida(planear_rover):
     expected_params = [
         "rover_inicio",
         "bateria_inicial",
-        "capsulas_equipo",
         "zonas_sombra",
         "muestras_igneas",
         "muestras_sedimentarias",
-        "punto_extraccion",
     ]
 
     # los primeros parámetros de la función tienen que ser los pedidos
@@ -74,14 +72,13 @@ def test_funcion_bien_definida(planear_rover):
 
 
 Case = namedtuple("Case", [
+    "id",
     "description",
     "rover",
     "battery",
-    "capsules",
     "shadows",
     "igneous",
     "sediments",
-    "exfil",
     "expected_cost",  # costo de la solución esperada (óptima)
     "time_limit_s",  # tiempo máximo en segundos que planear_rover debería demorar en encontrar solución
 ])
@@ -90,55 +87,82 @@ Case = namedtuple("Case", [
 @pytest.mark.parametrize("case", (
     # casos super simples donde hay que hacer casi nada
 
-    Case(description="sin muestras a recolectar, ya es meta",
-         rover=(0, 0), battery=20, capsules=[], shadows=[], igneous=[], sediments=[], exfil=(0, 0),
+    Case(id="goal", description="sin muestras a recolectar, ya es meta",
+         rover=(0, 0), battery=20, shadows=[],
+         igneous=[], sediments=[],
          expected_cost=0, time_limit_s=1),
 
-    Case(description="una sola muestra a recolectar, con capsula super cerca y bateria de sobra",
-         rover=(0, 0), battery=20, capsules=[(0, 1)], shadows=[], igneous=[(0, 2)], sediments=[], exfil=(0, 3),
-         expected_cost=9, time_limit_s=1),
+    # casos simples donde hay que hacer muy poco, con una sola muestra
 
-    Case(description="una sola muestra a recolectar del otro tipo",
-         rover=(0, 0), battery=20, capsules=[(0, 1)], shadows=[], igneous=[], sediments=[(0, 2)], exfil=(0, 3),
-         expected_cost=9, time_limit_s=1),
+    Case(id="s1", description="una sola muestra a recolectar, con bateria de sobra",
+         rover=(0, 0), battery=20, shadows=[],
+         igneous=[(0, 1)], sediments=[],
+         expected_cost=7, time_limit_s=1),
 
-    Case(description="una sola muestra a recolectar, pero se entrega en la misma casilla que de salida",
-         rover=(0, 0), battery=20, capsules=[(0, 1)], shadows=[], igneous=[(0, 2)], sediments=[], exfil=(0, 0),
-         expected_cost=9, time_limit_s=1),
+    Case(id="s2", description="una sola muestra a recolectar del otro tipo",
+         rover=(0, 0), battery=20, shadows=[],
+         igneous=[], sediments=[(0, 1)],
+         expected_cost=7, time_limit_s=1),
 
-    Case(description="una sola muestra a recolectar, pero hace falta cargar bateria antes",
-         rover=(0, 0), battery=1, capsules=[(0, 1)], shadows=[], igneous=[(0, 2)], sediments=[], exfil=(0, 3),
+    Case(id="s3", description="una sola muestra a recolectar, pero lo ideal es con overdive",
+         rover=(0, 0), battery=20, shadows=[],
+         igneous=[(0, 2)], sediments=[],
+         expected_cost=7, time_limit_s=1),
+
+    Case(id="s4", description="una sola muestra a recolectar, pero hace falta cargar bateria antes",
+         rover=(0, 0), battery=1, shadows=[],
+         igneous=[(0, 1)], sediments=[],
+         expected_cost=11, time_limit_s=1),
+
+    Case(id="s5", description="una sola muestra a recolectar, pero hace falta cargar bateria y no en el lugar donde estamos",
+         rover=(0, 0), battery=2, shadows=[(0, 0)],
+         igneous=[(0, 1)], sediments=[],
+         expected_cost=11, time_limit_s=1),
+
+    # casos medianos donde hay que resolver situaciones un poco más interesantes
+
+    Case(id="m1", description="3 muestras relativamente cerca",
+         rover=(0, 0), battery=20, shadows=[],
+         igneous=[(0, 1), (0, 2)], sediments=[(1, 1)],
+         expected_cost=17, time_limit_s=15),
+
+    Case(id="m2", description="3 muestras un poco más lejos",
+         rover=(0, 0), battery=20, shadows=[],
+         igneous=[(2, 2), (2, 3)], sediments=[(1, 1)],
+         expected_cost=20, time_limit_s=30),
+
+    Case(id="m3", description="1 muestra lejana",
+         rover=(0, 0), battery=20, shadows=[],
+         igneous=[(0, 30)], sediments=[],
+         expected_cost=40, time_limit_s=30),
+
+    Case(id="m4", description="2 muestras en direcciones opuestas",
+         rover=(0, 0), battery=20, shadows=[],
+         igneous=[(0, -5), (0, 5)], sediments=[],
+         expected_cost=25, time_limit_s=60),
+
+    Case(id="m5", description="1 muestra no tan lejos pero poca batería y sombras molestando en el medio",
+         rover=(0, 0), battery=2, shadows=[(1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2)],
+         igneous=[(3, 1)], sediments=[],
          expected_cost=13, time_limit_s=1),
 
-    Case(description="una sola muestra a recolectar, pero lo ideal es con overdive",
-         rover=(0, 0), battery=20, capsules=[(0, 2)], shadows=[], igneous=[(0, 4)], sediments=[], exfil=(0, 6),
-         expected_cost=9, time_limit_s=1),
-
-    Case(description="una sola muestra a recolectar, pero hace falta cargar bateria y no en el lugar donde estamos",
-         rover=(0, 0), battery=2, capsules=[(0, 1)], shadows=[(0, 0)], igneous=[(0, 2)], sediments=[], exfil=(0, 3),
-         expected_cost=13, time_limit_s=1),
-
-    # casos probablemente imposibles con SimpleAI por performance vs tamaño del árbol
-
-    # Case(description="caso del dibujo en la consigna",
-    #      rover=(0, 0), battery=20, capsules=[(-3, 1), (-2, -1), (-1, -3), (3 , -1)], shadows=[(-2, 2), (-1, 3)],
-    #      igneous=[(0, -5), (2, 1)], sediments=[(0, 5), (2, 2)], exfil=(2, -4),
-    #      expected_cost=10000, time_limit_s=60),
+    # casos complejos
+    # (pendiente)
 ))
 def test_resultado_es_correcto(planear_rover, case):
-    description, rover, battery, capsules, shadows, igneous, sediments, exfil, expected_cost, time_limit_s = case
+    id_, description, rover, battery, shadows, igneous, sediments, expected_cost, time_limit_s = case
 
     # helpers para mensajes de error y warnings
-    case_description = f"[{rover=}|{battery=}|{capsules=}|{shadows=}|{igneous=}|{sediments=}|{exfil=}]"
+    case_description = f"[{id_}|{rover=}|{battery=}|{shadows=}|{igneous=}|{sediments=}]"
     duration_msg = (f"El caso {case_description} demoró demasiado tiempo (más de {time_limit_s} "
                     "segundos), probablemente algo no está bien")
 
     with duration_warning(time_limit_s, duration_msg):
         print()
-        print("Resolviendo caso:", description)
+        print("Resolviendo caso:", id_, "|", description)
         print(case_description)
         print("...")
-        result = planear_rover(rover, battery, tuple(capsules), tuple(shadows), tuple(igneous), tuple(sediments), exfil)
+        result = planear_rover(rover, battery, tuple(shadows), tuple(igneous), tuple(sediments))
         print("Solución obtenida!")
 
     # otros helpers
@@ -147,7 +171,7 @@ def test_resultado_es_correcto(planear_rover, case):
         "sobremarcha": 1,
         "equipar": 3,
         "recolectar": 2,
-        "entregar": 1,
+        "depositar": 1,
         "recargar": 4,
     }
     batt_consumptions = {
@@ -155,7 +179,7 @@ def test_resultado_es_correcto(planear_rover, case):
         "sobremarcha": 4,
         "equipar": 1,
         "recolectar": 3,
-        "entregar": 1,
+        "depositar": 1,
         "recargar": -10,  # consumo negativo = recarga
     }
     error_prefix = f"Error en caso {case_description}:"
@@ -230,16 +254,13 @@ def test_resultado_es_correcto(planear_rover, case):
             assert target in ("termico", "percusion"), \
                 "{action_error_prefix} el tipo de taladro a equipar no es válido: {target}"
 
-            assert rover in capsules, \
-                "{action_error_prefix} no hay cápsula para equipar taladro en la posición del rover {rover}"
-
             drill = target
         elif action_type == "recolectar":
             assert target in ("ignea", "sedimentaria"), \
                 f"{action_error_prefix} el tipo de muestra a recolectar no es válido: {target}"
 
             assert load < max_load, \
-                f"{action_error_prefix} el rover ya tiene la carga máxima de 2 muestras, no puede recolectar más sin entregar"
+                f"{action_error_prefix} el rover ya tiene la carga máxima de 2 muestras, no puede recolectar más sin depositar"
 
             if target == "ignea":
                 assert drill == "termico", \
@@ -257,12 +278,9 @@ def test_resultado_es_correcto(planear_rover, case):
                 sediments = tuple(m for m in sediments if m != rover)
 
             load += 1
-        elif action_type == "entregar":
-            assert rover == exfil, \
-                f"{action_error_prefix} para entregar las muestras el rover debe estar en el punto de extracción {exfil}, pero está en {rover}"
-
+        elif action_type == "depositar":
             assert load > 0, \
-                f"{action_error_prefix} no hay muestras para entregar"
+                f"{action_error_prefix} no hay muestras para depositar"
 
             load = 0
         elif action_type == "recargar":
