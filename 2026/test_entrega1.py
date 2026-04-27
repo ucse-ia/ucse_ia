@@ -141,6 +141,16 @@ Case = namedtuple("Case", [
          igneous=[(0, -5), (0, 5)], sediments=[],
          expected_cost=25, time_limit_s=60),
 
+    Case(id="m5", description="1 muestra pero con poca batería y un camino muy específico entre las sombras",
+         rover=(0, 0), battery=8, shadows=[
+             (col, row)
+             for col in range(-10, 10)
+             for row in range(-10, 10)
+             if (col, row) != (0, 7)
+         ],
+         igneous=[(5, 5)], sediments=[],
+         expected_cost=25, time_limit_s=15),
+
     # casos complejos
     # (pendiente)
 ))
@@ -148,14 +158,15 @@ def test_resultado_es_correcto(planear_rover, case):
     id_, description, rover, battery, shadows, igneous, sediments, expected_cost, time_limit_s = case
 
     # helpers para mensajes de error y warnings
-    case_description = f"[{id_}|{rover=}|{battery=}|{shadows=}|{igneous=}|{sediments=}]"
-    duration_msg = (f"El caso {case_description} demoró demasiado tiempo (más de {time_limit_s} "
+    case_name = f"[{id_}: {description}]"
+    duration_msg = (f"El caso {case_name} demoró demasiado tiempo (más de {time_limit_s} "
                     "segundos), probablemente algo no está bien")
 
     with duration_warning(time_limit_s, duration_msg):
         print()
         print("Resolviendo caso:", id_, "|", description)
-        print(case_description)
+        print(case_name)
+        print(f"{rover=}, {battery=}, {shadows=}, {igneous=}, {sediments=}")
         print("...")
         result = planear_rover(rover, battery, tuple(shadows), tuple(igneous), tuple(sediments))
         print("Solución obtenida!")
@@ -177,7 +188,7 @@ def test_resultado_es_correcto(planear_rover, case):
         "depositar": 1,
         "recargar": -10,  # consumo negativo = recarga
     }
-    error_prefix = f"Error en caso {case_description}:"
+    error_prefix = f"Error en caso {case_name}:"
 
     # chequeamos la estructura de datos de forma muy básica
     assert isinstance(result, (list, tuple)), \
@@ -196,7 +207,7 @@ def test_resultado_es_correcto(planear_rover, case):
         print(rover, load, drill, igneous, sediments, "-->", action)
 
         # helper para mensajes de error
-        action_error_prefix = f"Error en {case_description} acción {idx_action}={action}:"
+        action_error_prefix = f"Error en {case_name} acción {idx_action}={action}:"
 
         assert isinstance(action, (list, tuple)), \
             f"{action_error_prefix} la acción no es una tupla, sino {type(action)}"
@@ -293,6 +304,6 @@ def test_resultado_es_correcto(planear_rover, case):
     # por las dudas, si lo resolvió mejor de lo esperado, revisar!
     if total_cost < expected_cost:
         warnings.warn(
-            f"La solución para {case_description} fue mejor de lo esperado: {total_cost} mins, pero"
+            f"La solución para {case_name} fue mejor de lo esperado: {total_cost} mins, pero"
             f"se esperaba {expected_cost} mins"
         )
