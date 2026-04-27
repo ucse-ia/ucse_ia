@@ -164,8 +164,7 @@ def test_resultado_es_correcto(planear_rover, case):
 
     with duration_warning(time_limit_s, duration_msg):
         print()
-        print("Resolviendo caso:", id_, "|", description)
-        print(case_name)
+        print("Resolviendo caso", case_name)
         print(f"{rover=}, {battery=}, {shadows=}, {igneous=}, {sediments=}")
         print("...")
         result = planear_rover(rover, battery, tuple(shadows), tuple(igneous), tuple(sediments))
