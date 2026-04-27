@@ -143,10 +143,10 @@ Case = namedtuple("Case", [
 
     Case(id="m5", description="1 muestra pero con poca batería y un camino muy específico entre las sombras",
          rover=(0, 0), battery=8, shadows=[
-             (col, row)
+             (row, col)
              for col in range(-10, 10)
              for row in range(-10, 10)
-             if (col, row) != (0, 7)
+             if (row, col) != (0, 7)
          ],
          igneous=[(5, 5)], sediments=[],
          expected_cost=25, time_limit_s=15),
