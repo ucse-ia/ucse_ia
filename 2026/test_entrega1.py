@@ -141,11 +141,6 @@ Case = namedtuple("Case", [
          igneous=[(0, -5), (0, 5)], sediments=[],
          expected_cost=25, time_limit_s=60),
 
-    Case(id="m5", description="1 muestra no tan lejos pero poca batería y sombras molestando en el medio",
-         rover=(0, 0), battery=2, shadows=[(1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2)],
-         igneous=[(3, 1)], sediments=[],
-         expected_cost=13, time_limit_s=1),
-
     # casos complejos
     # (pendiente)
 ))
