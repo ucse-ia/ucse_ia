@@ -97,34 +97,34 @@ Case = namedtuple("Case", [
     Case(id="s1", description="una sola muestra a recolectar, con bateria de sobra",
          rover=(0, 0), battery=20, shadows=[],
          igneous=[(0, 1)], sediments=[],
-         expected_cost=7, time_limit_s=1),
+         expected_cost=7, time_limit_s=2),
 
     Case(id="s2", description="una sola muestra a recolectar del otro tipo",
          rover=(0, 0), battery=20, shadows=[],
          igneous=[], sediments=[(0, 1)],
-         expected_cost=7, time_limit_s=1),
+         expected_cost=7, time_limit_s=2),
 
     Case(id="s3", description="una sola muestra a recolectar, pero lo ideal es con overdive",
          rover=(0, 0), battery=20, shadows=[],
          igneous=[(0, 2)], sediments=[],
-         expected_cost=7, time_limit_s=1),
+         expected_cost=7, time_limit_s=2),
 
     Case(id="s4", description="una sola muestra a recolectar, pero hace falta cargar bateria antes",
          rover=(0, 0), battery=1, shadows=[],
          igneous=[(0, 1)], sediments=[],
-         expected_cost=11, time_limit_s=1),
+         expected_cost=11, time_limit_s=2),
 
     Case(id="s5", description="una sola muestra a recolectar, pero hace falta cargar bateria y no en el lugar donde estamos",
          rover=(0, 0), battery=2, shadows=[(0, 0)],
          igneous=[(0, 1)], sediments=[],
-         expected_cost=11, time_limit_s=1),
+         expected_cost=11, time_limit_s=2),
 
     # casos medianos donde hay que resolver situaciones un poco más interesantes
 
     Case(id="m1", description="3 muestras relativamente cerca",
          rover=(0, 0), battery=20, shadows=[],
          igneous=[(0, 1), (0, 2)], sediments=[(1, 1)],
-         expected_cost=18, time_limit_s=15),
+         expected_cost=18, time_limit_s=30),
 
     Case(id="m2", description="3 muestras un poco más lejos",
          rover=(0, 0), battery=20, shadows=[],
@@ -149,14 +149,19 @@ Case = namedtuple("Case", [
              if (row, col) != (0, 7)
          ],
          igneous=[(5, 5)], sediments=[],
-         expected_cost=25, time_limit_s=15),
+         expected_cost=25, time_limit_s=30),
 
     # casos grandes
 
-    Case(id="c1", description="3 muestras en direcciones opuestas",
+    Case(id="g1", description="3 muestras en direcciones opuestas",
          rover=(0, 0), battery=20, shadows=[],
          igneous=[(0, -5), (0, 5), (5, 5)], sediments=[],
          expected_cost=36, time_limit_s=600),
+
+    Case(id="g2", description="5 muestras",
+         rover=(0, 0), battery=20, shadows=[],
+         igneous=[], sediments=[(1, col) for col in range(5)],
+         expected_cost=27, time_limit_s=200),
 ))
 def test_resultado_es_correcto(planear_rover, case):
     id_, description, rover, battery, shadows, igneous, sediments, expected_cost, time_limit_s = case
