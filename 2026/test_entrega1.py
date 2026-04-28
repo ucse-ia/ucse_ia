@@ -167,12 +167,15 @@ def test_resultado_es_correcto(planear_rover, case):
                     "segundos), probablemente algo no está bien")
 
     with duration_warning(time_limit_s, duration_msg):
+        start = datetime.now()
         print()
         print("Resolviendo caso", case_name)
         print(f"{rover=} {battery=} {shadows=} {igneous=} {sediments=}")
         print("...")
         result = planear_rover(rover, battery, tuple(shadows), tuple(igneous), tuple(sediments))
-        print("Solución obtenida!")
+        end = datetime.now()
+        duration_seconds = (end - start).total_seconds()
+        print(f"Solución obtenida en {duration_seconds:.1f} segundos:")
 
     # otros helpers
     times = {
@@ -301,6 +304,7 @@ def test_resultado_es_correcto(planear_rover, case):
             # no hay otro cambio más que actualizar battery, que ya se hizo arriba
 
     print("Simulación de pasos finalizada!")
+    print("Costo total de la solución obtenida:", total_cost)
 
     # al final, el rover debería haber recolectado todas las muestras y dejado todas en el punto de extracción
     assert not load, f"{error_prefix} al final del proceso quedan cargas en el rover: {load}"
