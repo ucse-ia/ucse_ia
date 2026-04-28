@@ -165,7 +165,7 @@ def test_resultado_es_correcto(planear_rover, case):
     with duration_warning(time_limit_s, duration_msg):
         print()
         print("Resolviendo caso", case_name)
-        print(f"{rover=}, {battery=}, {shadows=}, {igneous=}, {sediments=}")
+        print(f"{rover=} {battery=} {shadows=} {igneous=} {sediments=}")
         print("...")
         result = planear_rover(rover, battery, tuple(shadows), tuple(igneous), tuple(sediments))
         print("Solución obtenida!")
@@ -203,7 +203,7 @@ def test_resultado_es_correcto(planear_rover, case):
     print("Simulando pasos obtenidos...")
     # por cada accion, hacemos chequeos y vamos simulando todo para ver que sea posible
     for idx_action, action in enumerate(result):
-        print(rover, load, drill, igneous, sediments, "-->", action)
+        print(f"{rover=} {battery=} {load=} {drill=} {shadows=} {igneous=} {sediments=}", "-->", action)
 
         # helper para mensajes de error
         action_error_prefix = f"Error en {case_name} acción {idx_action}={action}:"
