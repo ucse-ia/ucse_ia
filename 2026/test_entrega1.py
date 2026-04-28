@@ -139,7 +139,7 @@ Case = namedtuple("Case", [
     Case(id="m4", description="2 muestras en direcciones opuestas",
          rover=(0, 0), battery=20, shadows=[],
          igneous=[(0, -5), (0, 5)], sediments=[],
-         expected_cost=26, time_limit_s=60),
+         expected_cost=24, time_limit_s=60),
 
     Case(id="m5", description="1 muestra pero con poca batería y un camino muy específico entre las sombras",
          rover=(0, 0), battery=8, shadows=[
@@ -151,8 +151,12 @@ Case = namedtuple("Case", [
          igneous=[(5, 5)], sediments=[],
          expected_cost=25, time_limit_s=15),
 
-    # casos complejos
-    # (pendiente)
+    # casos grandes
+
+    Case(id="c1", description="3 muestras en direcciones opuestas",
+         rover=(0, 0), battery=20, shadows=[],
+         igneous=[(0, -5), (0, 5), (5, 5)], sediments=[],
+         expected_cost=36, time_limit_s=600),
 ))
 def test_resultado_es_correcto(planear_rover, case):
     id_, description, rover, battery, shadows, igneous, sediments, expected_cost, time_limit_s = case
