@@ -124,12 +124,12 @@ Case = namedtuple("Case", [
     Case(id="m1", description="3 muestras relativamente cerca",
          rover=(0, 0), battery=20, shadows=[],
          igneous=[(0, 1), (0, 2)], sediments=[(1, 1)],
-         expected_cost=17, time_limit_s=15),
+         expected_cost=18, time_limit_s=15),
 
     Case(id="m2", description="3 muestras un poco más lejos",
          rover=(0, 0), battery=20, shadows=[],
          igneous=[(2, 2), (2, 3)], sediments=[(1, 1)],
-         expected_cost=19, time_limit_s=30),
+         expected_cost=20, time_limit_s=30),
 
     Case(id="m3", description="1 muestra lejana",
          rover=(0, 0), battery=20, shadows=[],
@@ -139,7 +139,7 @@ Case = namedtuple("Case", [
     Case(id="m4", description="2 muestras en direcciones opuestas",
          rover=(0, 0), battery=20, shadows=[],
          igneous=[(0, -5), (0, 5)], sediments=[],
-         expected_cost=25, time_limit_s=60),
+         expected_cost=26, time_limit_s=60),
 
     Case(id="m5", description="1 muestra pero con poca batería y un camino muy específico entre las sombras",
          rover=(0, 0), battery=8, shadows=[
@@ -223,7 +223,10 @@ def test_resultado_es_correcto(planear_rover, case):
         assert battery > 0, \
             f"{action_error_prefix} el rover se quedó sin batería después de esta acción, nunca debe quedar sin batería"
 
-        total_cost += times[action_type]
+        if action_type == "depositar":
+            total_cost += times[action_type] * load
+        else:
+            total_cost += times[action_type]
         assert total_cost <= expected_cost, \
             f"{action_error_prefix} la acción hace que el tiempo total sea {total_cost}, pero no puede ser mayor a {expected_cost}"
 
