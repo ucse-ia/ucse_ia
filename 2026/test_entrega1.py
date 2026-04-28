@@ -165,6 +165,9 @@ Case = namedtuple("Case", [
 ))
 def test_resultado_es_correcto(planear_rover, case):
     id_, description, rover, battery, shadows, igneous, sediments, expected_cost, time_limit_s = case
+    shadows = tuple(shadows)
+    igneous = tuple(igneous)
+    sediments = tuple(sediments)
 
     # helpers para mensajes de error y warnings
     case_name = f"[{id_}: {description}]"
@@ -177,7 +180,7 @@ def test_resultado_es_correcto(planear_rover, case):
         print("Resolviendo caso", case_name)
         print(f"{rover=} {battery=} {shadows=} {igneous=} {sediments=}")
         print("...")
-        result = planear_rover(rover, battery, tuple(shadows), tuple(igneous), tuple(sediments))
+        result = planear_rover(rover, battery, shadows, igneous, sediments)
         end = datetime.now()
         duration_seconds = (end - start).total_seconds()
         print(f"Solución obtenida en {duration_seconds:.1f} segundos:")
@@ -299,8 +302,11 @@ def test_resultado_es_correcto(planear_rover, case):
 
             load += 1
         elif action_type == "depositar":
-            assert load > 0, \
+            assert load, \
                 f"{action_error_prefix} no hay muestras para depositar"
+
+            assert load == 2 or (load == 1 and not (igneous + sediments)), \
+                f"{action_error_prefix} solo se puede depositar 1 muestra si es la última"
 
             load = 0
         elif action_type == "recargar":
