@@ -370,6 +370,10 @@ def test_resultado_es_correcto(build_camp, case):
         print(f"Caso {case_name} correctamente identificado como imposible.")
         return
 
+    assert result is not None, (
+        f"{case_name}: build_camp retornó None, pero existe al menos una solución válida para este caso"
+    )
+
     validate_result(
         result, camp_size, habs, generators, labs, deposits, airlocks, craters, case_name
     )
