@@ -31,7 +31,7 @@ def duration_warning(time_limit_s, message):
 def test_modulo_existe():
     # Si falla este test es porque no se pudo encontrar el código python de la entrega.
     # Probablemente el nombre del archivo no es correcto (debe ser entrega1.py), o no está en la
-    # raiz del repo, o no se están corriento los tests desde la raiz del repo.
+    # raiz del repo, o no se están corriendo los tests desde la raiz del repo.
     duration_msg = ("El import de la entrega demora demasiado tiempo, probablemente están "
                     "haciendo búsqueda en el import. Hagan lo del if __name__ ... que se "
                     "recomienda en la consigna")
@@ -45,14 +45,13 @@ def test_modulo_existe():
 @pytest.fixture()
 def planear_rover():
     import entrega1
-    planeaar_rover_function = getattr(entrega1, "planear_rover", None)
-
-    return planeaar_rover_function
+    fn = getattr(entrega1, "planear_rover", None)
+    return fn
 
 
 @pytest.mark.dependency(depends=["test_modulo_existe"])
 def test_funcion_existe(planear_rover):
-    assert planear_rover is not None, "La función planear_rover no existe"
+    assert planear_rover is not None, "La función planear_rover no existe en entrega1.py"
 
 
 @pytest.mark.dependency(depends=["test_funcion_existe"])
@@ -71,17 +70,20 @@ def test_funcion_bien_definida(planear_rover):
            "La función planear_rover no recibe los parámetros definidos en la entrega"
 
 
-Case = namedtuple("Case", [
-    "id",
-    "description",
-    "rover",
-    "battery",
-    "shadows",
-    "igneous",
-    "sediments",
-    "expected_cost",  # costo de la solución esperada (óptima)
-    "time_limit_s",  # tiempo máximo en segundos que planear_rover debería demorar en encontrar solución
-])
+Case = namedtuple(
+    "Case",
+    [
+        "id",
+        "description",
+        "rover",
+        "battery",
+        "shadows",
+        "igneous",
+        "sediments",
+        "expected_cost",  # costo de la solución esperada (óptima)
+        "time_limit_s",  # tiempo máximo en segundos que planear_rover debería demorar en encontrar solución
+    ],
+)
 
 @pytest.mark.dependency(depends=["test_funcion_bien_definida"])
 @pytest.mark.parametrize("case", (
@@ -175,11 +177,11 @@ def test_resultado_es_correcto(planear_rover, case):
                     "segundos), probablemente algo no está bien")
 
     with duration_warning(time_limit_s, duration_msg):
-        start = datetime.now()
         print()
         print("Resolviendo caso", case_name)
         print(f"{rover=} {battery=} {shadows=} {igneous=} {sediments=}")
         print("...")
+        start = datetime.now()
         result = planear_rover(rover, battery, shadows, igneous, sediments)
         end = datetime.now()
         duration_seconds = (end - start).total_seconds()

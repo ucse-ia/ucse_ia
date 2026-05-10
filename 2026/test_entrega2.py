@@ -3,6 +3,7 @@ from contextlib import contextmanager
 from collections import namedtuple
 from datetime import datetime
 from inspect import signature
+from itertools import combinations
 
 import pytest
 
@@ -12,11 +13,16 @@ import pytest
 
 @contextmanager
 def duration_warning(time_limit_s, message):
+    """
+    Context manager to check the duration of a piece of executed code, and trigger a warning if
+    it's too much.
+    """
     start = datetime.now()
 
     yield
 
     end = datetime.now()
+
     seconds = int((end - start).total_seconds())
     if time_limit_s is not None and seconds > time_limit_s:
         warnings.warn(message + f" [duración: {seconds} segundos]")
@@ -30,7 +36,7 @@ def test_modulo_existe():
     duration_msg = (
         "El import de la entrega demora demasiado tiempo, probablemente están "
         "ejecutando el CSP al importar el módulo. Toda la lógica de resolución "
-        "debe estar dentro de la función build_camp, no a nivel de módulo."
+        "debe estar dentro de la función pedida, no a nivel de módulo."
     )
     with duration_warning(1, duration_msg):
         try:
@@ -42,7 +48,6 @@ def test_modulo_existe():
 @pytest.fixture()
 def build_camp():
     import entrega2
-
     fn = getattr(entrega2, "build_camp", None)
     return fn
 
@@ -189,11 +194,10 @@ def validate_result(
             )
 
     # Restricción 6: generadores no adyacentes entre sí
-    for i, (gr1, gc1) in enumerate(gens_pos):
-        for gr2, gc2 in gens_pos[i + 1 :]:
-            assert not adjacent(gr1, gc1, gr2, gc2), (
-                f"{case_name}: generadores en ({gr1},{gc1}) y ({gr2},{gc2}) son adyacentes entre sí"
-            )
+    for (gr1, gc1), (gr2, gc2) in combinations(gens_pos, 2):
+        assert not adjacent(gr1, gc1, gr2, gc2), (
+            f"{case_name}: generadores en ({gr1},{gc1}) y ({gr2},{gc2}) son adyacentes entre sí"
+        )
 
     # Restricción 7: laboratorio adyacente a al menos un depósito
     for lr, lc in labs_pos:
@@ -360,8 +364,11 @@ def test_resultado_es_correcto(build_camp, case):
         print(
             f"{camp_size=} {habs=} {generators=} {labs=} {deposits=} {airlocks=} {craters=}"
         )
+        start = datetime.now()
         result = build_camp(camp_size, habs, generators, labs, deposits, airlocks, craters)
-        print(f"Resultado obtenido: {result}")
+        end = datetime.now()
+        duration_seconds = (end - start).total_seconds()
+        print(f"Solución obtenida en {duration_seconds:.1f} segundos: {result}")
 
     if not is_possible:
         assert result is None, (
